@@ -1,47 +1,29 @@
 
 
 template<typename T>
-inline bool cd::intersects(const std::vector<Vector2<T>>& shape1, const std::vector<Vector2<T>>& shape2)
+bool cd::intersects(Collision<T> collision1, Collision<T> collision2)
 {
-	std::vector<Triangle<T>> triangles1;
-	std::vector<Triangle<T>> triangles2;
-
-	for (int i = 2; i < shape1.size(); i++)
+	for (auto i = collision1.getTriangles().begin(); i != collision1.getTriangles().end(); i++)
 	{
-		Triangle<T> triangle;
-
-		for (int j = 0, k = i - 2;
-			k <= i;
-			j++, k++)
-		{
-			triangle.vertices[j] = shape1[k];
-		}
-
-		triangles1.push_back(triangle);
-	}
-
-	for (int i = 2; i < shape2.size(); i++)
-	{
-		Triangle<T> triangle;
-
-		for (int j = 0, k = i - 2;
-			k <= i;
-			j++, k++)
-		{
-			triangle.vertices[j] = shape2[k];
-		}
-
-		triangles2.push_back(triangle);
-	}
-
-	for (auto i = triangles1.begin(); i != triangles1.end(); i++)
-	{
-		for (auto j = triangles2.begin(); j != triangles2.end(); j++)
+		for (auto j = collision2.getTriangles().begin(); j != collision2.getTriangles().end(); j++)
 		{
 			if (j->collides(*i))
 			{
 				return true;
 			}
+		}
+	}
+	return false;
+}
+
+template<typename T>
+bool cd::contains(Collision<T> collision, const Vector2<T>& point)
+{
+	for (auto i = collision.getTriangles().begin(); i != collision.getTriangles().end(); i++)
+	{
+		if (i->contains(point))
+		{
+			return true;
 		}
 	}
 	return false;
@@ -78,38 +60,7 @@ inline Vector2<T> cd::normal(const Vector2<T>& vec)
 	return Vector2<T>(vec.y, -vec.x);
 }
 
-template<typename T>
-inline bool cd::Triangle<T>::collides(const Triangle<T>& other)
-{
-	Vector2<T> axis;
 
-	Projection<T> p1(vertices);
-	Projection<T> p2(other.vertices);
 
-	for (int i = 0, j = 2; i < 3; i++, j = i - 1)
-	{
-		axis = Vector2<T>(normalize(normal(Vector2<T>(vertices[i] - vertices[j]))));
-
-		p1.setAxis(axis);
-		p2.setAxis(axis);
-
-		if (!p1.overlaps(p2) && !p2.overlaps(p1))
-		{
-			return false;
-		}
-
-		axis = Vector2<T>(normalize(normal(Vector2<T>(other.vertices[i] - other.vertices[j]))));
-
-		p1.setAxis(axis);
-		p2.setAxis(axis);
-
-		if (!p1.overlaps(p2) && !p2.overlaps(p1))
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
 
 

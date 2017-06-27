@@ -1,14 +1,22 @@
 #include <math.h>
 #include <vector>
-#include <SFML\System\Vector2.hpp>
-#include "Projection.hpp"
 
-using namespace sf;
+#include "Projection.hpp"
+#include "Collision.hpp"
+
+////////////////////////////////////
+#include <SFML\System\Vector2.hpp>//
+using namespace sf;               //
+////////////////////////////////////
 
 namespace cd
 {
+
 	template<typename T>
-	bool intersects(const std::vector<Vector2<T>>& shape1, const std::vector<Vector2<T>>& shape2);
+	bool intersects(Collision<T> collision1, Collision<T> collision2);
+
+	template<typename T>
+	bool contains(Collision<T> collision, const Vector2<T>& point);
 
 	template<typename T>
 	double vectorLength(const Vector2<T>& v);
@@ -24,14 +32,6 @@ namespace cd
 
 	template<typename T>
 	Vector2<T> normal(const Vector2<T>& vec);
-
-	template<typename T>
-	struct Triangle
-	{
-		Vector2<T> vertices[3];
-
-		bool collides(const Triangle<T>& other);
-	};
 
 	#include "CollisionDetection.inl"
 }
