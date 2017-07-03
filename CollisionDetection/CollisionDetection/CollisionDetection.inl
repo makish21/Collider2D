@@ -1,7 +1,7 @@
 
 
 template<typename T>
-bool cd::intersects(Collision<T> collision1, Collision<T> collision2)
+bool cd::intersects(const Collision<T>& collision1, const Collision<T>& collision2)
 {
 	for (auto i = collision1.getTriangles().begin(); i != collision1.getTriangles().end(); i++)
 	{
@@ -17,7 +17,7 @@ bool cd::intersects(Collision<T> collision1, Collision<T> collision2)
 }
 
 template<typename T>
-bool cd::contains(Collision<T> collision, const Vector2<T>& point)
+bool cd::contains(const Collision<T>& collision, const VECTOR& point)
 {
 	for (auto i = collision.getTriangles().begin(); i != collision.getTriangles().end(); i++)
 	{
@@ -30,34 +30,34 @@ bool cd::contains(Collision<T> collision, const Vector2<T>& point)
 }
 
 template<typename T>
-inline double cd::vectorLength(const Vector2<T>& v)
+inline T cd::vectorLength(const VECTOR& v)
 {
 	return std::sqrt(v.x * v.x + v.y * v.y);
 }
 
 template<typename T>
-inline T cd::dotProduct(const Vector2<T>& vec1, const Vector2<T>& vec2)
+inline T cd::dotProduct(const VECTOR& vec1, const VECTOR& vec2)
 {
 	return vec1.x * vec2.x + vec1.y * vec2.y;
 }
 
 template<typename T>
-inline Vector2<T> cd::normalize(const Vector2<T>& v)
+inline VECTOR cd::normalize(const VECTOR& v)
 {
-	return vectorLength(v) == 0 ? Vector2<T>(0, 0) : Vector2<T>(v / float(vectorLength(v)));
+	return vectorLength(v) == 0 ? VECTOR(0, 0) : VECTOR(v / float(vectorLength(v)));
 }
 
 template<typename T>
-inline Vector2<T> cd::projection(const Vector2<T>& from, const Vector2<T>& onto)
+inline VECTOR cd::projection(const VECTOR& from, const VECTOR& onto)
 {
-	return Vector2<T>((cd::dotProduct(from, onto) / (onto.x * onto.x + onto.y * onto.y) * onto.x),
+	return VECTOR((cd::dotProduct(from, onto) / (onto.x * onto.x + onto.y * onto.y) * onto.x),
 		(cd::dotProduct(from, onto) / (onto.x * onto.x + onto.y * onto.y) * onto.y));
 }
 
 template<typename T>
-inline Vector2<T> cd::normal(const Vector2<T>& vec)
+inline VECTOR cd::normal(const VECTOR& vec)
 {
-	return Vector2<T>(vec.y, -vec.x);
+	return VECTOR(vec.y, -vec.x);
 }
 
 

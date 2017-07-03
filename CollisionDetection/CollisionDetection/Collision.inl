@@ -7,7 +7,7 @@ inline cd::Collision<T>::Collision()
 }
 
 template<typename T>
-inline cd::Collision<T>::Collision(const std::vector<Vector2<T>>& vertices, const PrimitiveType & type)
+inline cd::Collision<T>::Collision(const std::vector<VECTOR>& vertices, const PrimitiveType & type)
 {
 	switch (type)
 	{
@@ -61,14 +61,14 @@ inline const std::vector<Triangle<T>>& cd::Collision<T>::getTriangles() const
 template<typename T> 
 inline bool cd::Triangle<T>::collides(const Triangle<T>& other) const
 {
-	Vector2<T> axis;
+	VECTOR axis;
 
 	Projection<T> projectionThis(vertices);
 	Projection<T> projectionOther(other.vertices);
 
 	for (int i = 0, j = 2; i < 3; i++, j = i - 1)
 	{
-		axis = Vector2<T>(normalize(normal(Vector2<T>(vertices[i] - vertices[j]))));
+		axis = VECTOR(normalize(normal(VECTOR(vertices[i] - vertices[j]))));
 
 		projectionThis.setAxis(axis);
 		projectionOther.setAxis(axis);
@@ -78,7 +78,7 @@ inline bool cd::Triangle<T>::collides(const Triangle<T>& other) const
 			return false;
 		}
 
-		axis = Vector2<T>(normalize(normal(Vector2<T>(other.vertices[i] - other.vertices[j]))));
+		axis = VECTOR(normalize(normal(VECTOR(other.vertices[i] - other.vertices[j]))));
 
 		projectionThis.setAxis(axis);
 		projectionOther.setAxis(axis);
@@ -93,15 +93,15 @@ inline bool cd::Triangle<T>::collides(const Triangle<T>& other) const
 }
 
 template<typename T>
-inline bool cd::Triangle<T>::contains(const Vector2<T>& point) const
+inline bool cd::Triangle<T>::contains(const VECTOR& point) const
 {
-	Vector2<T> axis;
+	VECTOR axis;
 
 	Projection<T> projection(vertices);
 
 	for (int i = 0, j = 2; i < 3; i++, j = i - 1)
 	{
-		axis = Vector2<T>(normalize(normal(Vector2<T>(vertices[i] - vertices[j]))));
+		axis = VECTOR(normalize(normal(VECTOR(vertices[i] - vertices[j]))));
 
 		projection.setAxis(axis);
 

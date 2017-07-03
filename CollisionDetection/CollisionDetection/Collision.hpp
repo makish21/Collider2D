@@ -1,9 +1,11 @@
-#pragma once
+#ifndef COLLISION
+#define COLLISION
+
 #include <vector>
 
 ////////////////////////////////////
 #include <SFML\System\Vector2.hpp>//
-using namespace sf;               //
+#define VECTOR sf::Vector2<T>     //
 ////////////////////////////////////
 
 namespace cd
@@ -17,10 +19,10 @@ namespace cd
 	template<typename T>
 	struct Triangle
 	{
-		Vector2<T> vertices[3];
+		VECTOR vertices[3];
 
 		bool collides(const Triangle<T>& other) const;
-		bool contains(const Vector2<T>& point) const;
+		bool contains(const VECTOR& point) const;
 	};
 
 	template <typename T>
@@ -28,7 +30,7 @@ namespace cd
 	{
 	public:
 		explicit Collision();
-		explicit Collision(const std::vector<Vector2<T>>& vertices, const PrimitiveType& type = TrianglesStrip);
+		explicit Collision(const std::vector<VECTOR>& vertices, const PrimitiveType& type = TrianglesStrip);
 		~Collision();
 
 		const std::vector<Triangle<T>>& getTriangles() const;
@@ -37,5 +39,11 @@ namespace cd
 		std::vector<Triangle<T>> triangles_;
 	};
 
-#include "Collision.inl"	
+#include "Collision.inl"
+
+	// Define the most common types
+	typedef Collision<float>      Collision2f;
+	typedef Collision<double>	  Collision2d;
 }
+
+#endif // COLLISION
