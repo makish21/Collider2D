@@ -1,42 +1,36 @@
-#ifndef COLLISION_DETECTION
-#define COLLISION_DETECTION
+#ifndef COLLISION_DETECTION_HPP
+#define COLLISION_DETECTION_HPP
 
-#include <math.h>
 #include <vector>
-
 #include <complex>
-#include "Projection.hpp"
-#include "Collision.hpp"
+
+#include "CircleShapeCollision.h"
+#include "ConvexShapeCollision.h"
+#include "CompoundShapeCollision.h"
 
 ////////////////////////////////////
 #include <SFML\System\Vector2.hpp>//
-#define VECTOR sf::Vector2<T>     //
+#define VECTOR sf::Vector2        //
 ////////////////////////////////////
 
 namespace cd
 {
 	template<typename T>
-	bool intersects(const Collision<T>& collision1, const Collision<T>& collision2);
+	T vectorLength(const VECTOR<T>& v);
 
 	template<typename T>
-	bool contains(const Collision<T>& collision, const VECTOR& point);
+	T dotProduct(const VECTOR<T>& vec1, const VECTOR<T>& vec2);
 
 	template<typename T>
-	T vectorLength(const VECTOR& v);
-
-	template<typename T>
-	T dotProduct(const VECTOR& vec1, const VECTOR& vec2);
-
-	template<typename T>
-	VECTOR normalize(const VECTOR& v);
+	VECTOR<T> normalize(const VECTOR<T>& v);
 	
 	template<typename T>
-	VECTOR projection(const VECTOR& from, const VECTOR& onto);
+	VECTOR<T> projection(const VECTOR<T>& from, const VECTOR<T>& onto);
 
 	template<typename T>
-	VECTOR normal(const VECTOR& vec);
+	VECTOR<T> normal(const VECTOR<T>& vec);
 
 	#include "CollisionDetection.inl"
 }
 
-#endif // COLLISION_DETECTION
+#endif // COLLISION_DETECTION_HPP

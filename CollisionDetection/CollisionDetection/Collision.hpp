@@ -1,49 +1,29 @@
-#ifndef COLLISION
-#define COLLISION
-
-#include <vector>
+#ifndef COLLISION_HPP
+#define COLLISION_HPP
 
 ////////////////////////////////////
 #include <SFML\System\Vector2.hpp>//
-#define VECTOR sf::Vector2<T>     //
+#define VECTOR sf::Vector2        //
 ////////////////////////////////////
 
 namespace cd
 {
-	enum PrimitiveType
-	{
-		TrianglesStrip,
-		TrianglesFan,
-	};
+	class CompoundShapeCollision;
+	class ConvexShapeCollision;
+	class CircleShapeCollision;
 
-	template<typename T>
-	struct Triangle
-	{
-		VECTOR vertices[3];
-
-		bool collides(const Triangle<T>& other) const;
-		bool contains(const VECTOR& point) const;
-	};
-
-	template <typename T>
 	class Collision
 	{
 	public:
-		explicit Collision();
-		explicit Collision(const std::vector<VECTOR>& vertices, const PrimitiveType& type = TrianglesStrip);
-		~Collision();
+		virtual ~Collision() {};
 
-		const std::vector<Triangle<T>>& getTriangles() const;
+		virtual bool intersects(const Collision&) const = 0;
+		virtual bool intersects(const CompoundShapeCollision&) const = 0;
+		virtual bool intersects(const CircleShapeCollision&) const = 0;
+		virtual bool intersects(const ConvexShapeCollision&) const = 0;
 
-	private:
-		std::vector<Triangle<T>> triangles_;
+		virtual bool contains(const VECTOR<float>& point) const = 0;
 	};
-
-#include "Collision.inl"
-
-	// Define the most common types
-	typedef Collision<float>      Collision2f;
-	typedef Collision<double>	  Collision2d;
 }
 
 #endif // COLLISION
