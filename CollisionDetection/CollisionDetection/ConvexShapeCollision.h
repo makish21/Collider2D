@@ -10,16 +10,15 @@ namespace cd
 	class ConvexShapeCollision :
 		public Collision
 	{
-		friend CompoundShapeCollision;
-
 	public:
 		ConvexShapeCollision();
+		ConvexShapeCollision(const size_t& vertexCount);
 		ConvexShapeCollision(const std::vector<VECTOR<float>>& vertices);
 
 		~ConvexShapeCollision();
 
 		void resize(const std::size_t& newSize);
-		std::size_t getVertexCount() const;
+		size_t getVertexCount() const;
 		void append(const VECTOR<float>& vertex);
 		void clear();
 

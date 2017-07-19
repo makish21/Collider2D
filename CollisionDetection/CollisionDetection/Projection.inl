@@ -1,6 +1,12 @@
-#include "Projection.hpp"
 
-
+template<typename T>
+inline cd::Projection<T>::Projection(const CircleShapeCollision & circle, const VECTOR<float>& axis) :
+	axis_(axis)
+{
+	float p = dotProduct(axis, circle.getPosition());
+	min_ = p - circle.getRadius();
+	max_ = p + circle.getRadius();
+}
 
 template<typename T>
 inline cd::Projection<T>::Projection(const VECTOR<T>& position, const T & radius, const VECTOR<T>& axis) :
@@ -12,15 +18,15 @@ inline cd::Projection<T>::Projection(const VECTOR<T>& position, const T & radius
 }
 
 template<typename T>
-inline cd::Projection<T>::Projection(const std::vector<VECTOR<T>>& vertices, const VECTOR<T>& axis) :
+inline cd::Projection<T>::Projection(const ConvexShapeCollision & convex, const VECTOR<float>& axis) :
 	axis_(axis)
 {
-	min_ = dotProduct(axis, vertices[0]);
+	min_ = dotProduct(axis, convex[0]);
 	max_ = min_;
 
-	for (auto i = vertices.begin(); i != vertices.end(); i++)
+	for (size_t i = 0; i < convex.getVertexCount(); i++)
 	{
-		float p = dotProduct(axis, *i);
+		float p = dotProduct(axis, convex[i]);
 		p < min_ ? min_ = p : p > max_ ? max_ = p : p;
 	}
 }
@@ -33,7 +39,8 @@ inline cd::Projection<T>::~Projection()
 template<typename T>
 inline bool cd::Projection<T>::overlaps(Projection<T>& other)
 {
-	return (contains(other.min_) || contains(other.max_));
+	return (contains(other.min_) || contains(other.max_)) ||
+		(other.contains(this->min_) || other.contains(this->max_));
 }
 
 template<typename T>

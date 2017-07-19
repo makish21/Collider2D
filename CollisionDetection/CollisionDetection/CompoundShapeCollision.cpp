@@ -7,42 +7,57 @@ namespace cd
 	{
 	}
 
+	CompoundShapeCollision::CompoundShapeCollision(const std::vector<ConvexShapeCollision>& convexShapes) :
+		convexShapes_(convexShapes)
+	{
+	}
+
 	CompoundShapeCollision::CompoundShapeCollision(const std::vector<VECTOR<float>>& vertices, const PrimitiveType& type)
+	{
+		append(vertices, type);
+	}
+
+	CompoundShapeCollision::~CompoundShapeCollision()
+	{
+	}
+
+	void CompoundShapeCollision::append(const ConvexShapeCollision & convex)
+	{
+		convexShapes_.push_back(convex);
+	}
+
+	void CompoundShapeCollision::append(const std::vector<VECTOR<float>>& vertices, const PrimitiveType & type)
 	{
 		switch (type)
 		{
-		case TrianglesStrip:
+		case TriangleStrip:
 			for (int i = 2; i < vertices.size(); i++)
 			{
-				std::vector<VECTOR<float>> tVertices;
+				ConvexShapeCollision triangle(3);
 
 				for (int j = 0, k = i - 2;
 					k <= i;
 					j++, k++)
 				{
-					//triangle.vertices[j] = vertices[k];
-					tVertices.push_back(vertices[k]);
+					triangle[j] = vertices[k];
 				}
 
-				ConvexShapeCollision triangle(tVertices);
 				convexShapes_.push_back(triangle);
 			}
 			break;
 
-		case TrianglesFan:
+		case TriangleFan:
 			for (int i = 2; i < vertices.size(); i++)
 			{
-				std::vector<VECTOR<float>> tVertices;
+				ConvexShapeCollision triangle(3);
 
 				for (int j = 0, k = 0;
 					k <= i;
 					j++, k = i - 1 + j - 1)
 				{
-					//triangle.vertices[j] = vertices[k];
-					tVertices.push_back(vertices[k]);
+					triangle[j] = vertices[k];
 				}
 
-				ConvexShapeCollision triangle(tVertices);
 				convexShapes_.push_back(triangle);
 			}
 			break;
@@ -51,8 +66,9 @@ namespace cd
 		}
 	}
 
-	CompoundShapeCollision::~CompoundShapeCollision()
+	void CompoundShapeCollision::clear()
 	{
+		convexShapes_.clear();
 	}
 
 	bool CompoundShapeCollision::intersects(const CompoundShapeCollision & other) const

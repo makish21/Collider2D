@@ -6,21 +6,16 @@ class CollidableShape :
 	public sf::Transformable, public sf::Drawable
 {
 public:
-	CollidableShape(const sf::VertexArray& shape, const cd::PrimitiveType& type, const sf::Color& color);
-	~CollidableShape();
+	CollidableShape(const sf::Color& color);
+	virtual ~CollidableShape();
 
-	void updateCollision();
-
-	void setColor(const sf::Color& color);
+	void setDefaultColor(const sf::Color& color);
 	const sf::Color& getDefaultColor() const;
 
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void updateCollision() = 0;
+	virtual void setColor(const sf::Color& color) = 0;
+	virtual const cd::Collision& getCollision() const = 0;
 
-	cd::Collision* collision;
-
-private:
-	sf::VertexArray shape_;
-	sf::Color color_;
-	std::vector<sf::Vector2f> collisionVertices_;
-	cd::PrimitiveType primitiveType_;
+protected:
+	sf::Color color;
 };

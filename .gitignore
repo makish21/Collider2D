@@ -47,3 +47,7 @@
 *.ilk
 *.pdb
 /CollisionDetection/Example/
+*.xml
+*.lastcodeanalysissucceeded
+*.iobj
+*.ipdb

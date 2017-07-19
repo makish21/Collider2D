@@ -11,6 +11,11 @@ namespace cd
 	{
 	}
 
+	ConvexShapeCollision::ConvexShapeCollision(const size_t & vertexCount)
+	{
+		vertices_.resize(vertexCount);
+	}
+
 	ConvexShapeCollision::ConvexShapeCollision(const std::vector<VECTOR<float>>& vertices) :
 		vertices_(vertices)
 	{
@@ -25,7 +30,7 @@ namespace cd
 		vertices_.resize(newSize);
 	}
 
-	std::size_t ConvexShapeCollision::getVertexCount() const
+	size_t ConvexShapeCollision::getVertexCount() const
 	{
 		return vertices_.size();
 	}
@@ -49,24 +54,26 @@ namespace cd
 	{
 		VECTOR<float> axis;
 	
+		// i: [0], [1], [2], [3]...[n];
+		// j: [n], [0], [1], [2]...[n-1];
 		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
 		{
 			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
 
-			cd::Projection<float> projectionThis(vertices_, axis);
-			cd::Projection<float> projectionOther(other.vertices_, axis);
+			cd::Projection<float> projectionThis(*this, axis);
+			cd::Projection<float> projectionOther(other, axis);
 	
-			if (!projectionThis.overlaps(projectionOther) && !projectionOther.overlaps(projectionThis))
+			if (!projectionThis.overlaps(projectionOther))
 			{
 				return false;
 			}
 	
 			axis = normalize(normal(VECTOR<float>(other.vertices_[i] - other.vertices_[j])));
 	
-			projectionThis = cd::Projection<float>(vertices_, axis);
-			projectionOther = cd::Projection<float>(other.vertices_, axis);
+			projectionThis = cd::Projection<float>(*this, axis);
+			projectionOther = cd::Projection<float>(other, axis);
 	
-			if (!projectionThis.overlaps(projectionOther) && !projectionOther.overlaps(projectionThis))
+			if (!projectionThis.overlaps(projectionOther))
 			{
 				return false;
 			}
@@ -78,27 +85,37 @@ namespace cd
 	bool ConvexShapeCollision::intersects(const CircleShapeCollision & circle) const
 	{
 		VECTOR<float> axis;
+		VECTOR<float> nearestPoint = vertices_[0];
 		float nearestPointDistance = vectorLength(circle.getPosition() - vertices_[0]);
 
+		// i: [0], [1], [2], [3]...[n];
+		// j: [n], [0], [1], [2]...[n-1];
 		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
 		{
 			float distance = vectorLength(circle.getPosition() - vertices_[i]);
 			if (distance < nearestPointDistance)
 			{
+				nearestPoint = vertices_[i];
 				nearestPointDistance = distance;
 			}
+
 			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
 
-			cd::Projection<float> projectionConvex(vertices_, axis);
-			cd::Projection<float> projectionCircle(circle.getPosition(), circle.getRadius(), axis);
+			cd::Projection<float> projectionConvex(*this, axis);
+			cd::Projection<float> projectionCircle(circle, axis);
 
-			if (!projectionConvex.overlaps(projectionCircle) && !projectionCircle.overlaps(projectionConvex))
+			if (!projectionConvex.overlaps(projectionCircle))
 			{
 				return false;
 			}
 		}
 
-		return nearestPointDistance < circle.getRadius();
+		axis = normalize(VECTOR<float>(nearestPoint - circle.getPosition()));
+
+		cd::Projection<float> projectionConvex(*this, axis);
+		cd::Projection<float> projectionCircle(circle, axis);
+		
+		return projectionCircle.overlaps(projectionConvex);
 	}
 
 	bool ConvexShapeCollision::intersects(const Collision& other) const
@@ -110,11 +127,13 @@ namespace cd
 	{
 		VECTOR<float> axis;
 
+		// i: [0], [1], [2], [3]...[n];
+		// j: [n], [0], [1], [2]...[n-1];
 		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
 		{
 			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
 
-			Projection<float> projection(vertices_, axis);
+			Projection<float> projection(*this, axis);
 
 			if (!projection.contains(point))
 			{
@@ -123,6 +142,7 @@ namespace cd
 		}
 		return true;
 	}
+
 	VECTOR<float>& ConvexShapeCollision::operator[](const std::size_t& index)
 	{
 		return vertices_[index];

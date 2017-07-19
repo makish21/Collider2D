@@ -1,31 +1,8 @@
 #include <SFML\Graphics.hpp>
 #include <vector>
-#include <CollisionDetection.hpp>
 
-struct CollidableShape : public sf::Transformable, public sf::Drawable
-{
-	sf::Color color;
-	sf::VertexArray shape;
-	cd::Collision<float> collision;
-
-	void updateCollision()
-	{
-		std::vector<sf::Vector2f> vertices;
-		for (int i = 0; i < shape.getVertexCount(); i++)
-		{
-			vertices.push_back(getTransform().transformPoint(shape[i].position));
-		}
-
-		collision = cd::Collision<float>(vertices);
-	}
-	
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		states.transform *= getTransform();
-
-		target.draw(shape, states);
-	}
-};
+#include "CompoundCollidableShape.h"
+#include "CircleCollidableShape.h"
 
 void main()
 {
@@ -39,17 +16,16 @@ void main()
 	sf::VertexArray newShape(sf::TrianglesStrip);
 	CollidableShape* selectedShape = nullptr;
 
-
 	std::vector<sf::RectangleShape> points;
 	sf::VertexArray lines(sf::LinesStrip);
 
 	sf::Vector2f mousePosition;
 
-	std::vector<CollidableShape> collidableShapes;
+	std::vector<CollidableShape*> collidableShapes;
+
+	collidableShapes.push_back(new CircleCollidableShape(sf::Vector2f(400.f, 300.f), 50.f, sf::Color::Magenta));
 
 	sf::Event event;
-
-	float angle = 0.f;
 
 	while (window.isOpen())
 	{
@@ -62,10 +38,30 @@ void main()
 				break;
 
 			case sf::Event::MouseMoved:
+
+				mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
+
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && selectedShape)
 				{
 					selectedShape->setPosition(mousePosition);
 					selectedShape->updateCollision();
+
+					for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
+					{
+						if ((*i) != selectedShape)
+						{
+							if ((*i)->getCollision().intersects(selectedShape->getCollision()))
+							{
+								(*i)->setColor(sf::Color::Red);
+								selectedShape->setColor(sf::Color::Red);
+							}
+							else
+							{
+								(*i)->setColor((*i)->getDefaultColor());
+								selectedShape->setColor(selectedShape->getDefaultColor());
+							}
+						}
+					}
 				}
 				break;
 
@@ -74,10 +70,6 @@ void main()
 				{
 				case sf::Mouse::Left:
 					selectedShape = nullptr;
-					break;
-
-				case sf::Mouse::Right:
-					angle = 0.f;
 					break;
 
 				default:
@@ -94,9 +86,9 @@ void main()
 				{
 					for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
 					{
-						if (cd::contains(i->collision, mousePosition))
+						if ((*i)->getCollision().contains(mousePosition))
 						{
-							selectedShape = &(*i);
+							selectedShape = (*i);
 							selectedShape->setOrigin(selectedShape->getOrigin() - selectedShape->getPosition() + mousePosition);
 							selectedShape->setPosition(mousePosition);
 						}
@@ -146,22 +138,6 @@ void main()
 					break;
 				}
 
-				case sf::Mouse::Right:
-				{
-					for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
-					{
-						if (cd::contains(i->collision, mousePosition))
-						{
-							selectedShape = &(*i);
-							//selectedShape->setOrigin(selectedShape->getOrigin() - selectedShape->getPosition() + mousePosition);
-							selectedShape->setOrigin(selectedShape->getTransform().transformPoint(mousePosition));
-							//selectedShape->getTransform().combine(sf::Transform::transformPoint(mousePosition));
-							selectedShape->setPosition(mousePosition);
-							angle = 0.1f;
-						}
-					}
-				}
-
 				default:
 					break;
 				}
@@ -171,21 +147,9 @@ void main()
 				{
 				case sf::Keyboard::LControl:
 				{
-					CollidableShape collidableShape;
-					std::vector<sf::Vector2f> collision;
+					CompoundCollidableShape collidableShape(newShape, cd::TriangleStrip, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
 
-					collidableShape.color = sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255);
-
-					for (int i = 0; i < newShape.getVertexCount(); i++)
-					{
-						newShape[i].color = collidableShape.color;
-						collision.push_back(newShape[i].position);
-					}
-
-					collidableShape.shape = newShape;
-					collidableShape.collision = cd::Collision<float>(collision);
-
-					collidableShapes.push_back(collidableShape);
+					collidableShapes.push_back(new CompoundCollidableShape(collidableShape));
 
 					newShape.clear();
 					points.clear();
@@ -196,21 +160,9 @@ void main()
 
 				case sf::Keyboard::LShift:
 				{
-					CollidableShape collidableShape;
-					std::vector<sf::Vector2f> collision;
+					CompoundCollidableShape collidableShape(newShape, cd::TriangleFan, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
 
-					collidableShape.color = sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255);
-
-					for (int i = 0; i < newShape.getVertexCount(); i++)
-					{
-						newShape[i].color = collidableShape.color;
-						collision.push_back(newShape[i].position);
-					}
-
-					collidableShape.shape = newShape;
-					collidableShape.collision = cd::Collision<float>(collision, cd::TrianglesFan);
-
-					collidableShapes.push_back(collidableShape);
+					collidableShapes.push_back(new CompoundCollidableShape(collidableShape));
 
 					newShape.clear();
 					points.clear();
@@ -228,54 +180,12 @@ void main()
 			}
 		}
 
-		mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
-
-		for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
-		{
-			if (cd::contains(i->collision, sf::Vector2f(sf::Mouse::getPosition(window))))
-			{
-				for (int k = 0; k < i->shape.getVertexCount(); k++)
-				{
-					i->shape[k].color = i->color - sf::Color(0, 0, 0, 64);
-				}
-			}
-			else
-			{
-				for (int k = 0; k < i->shape.getVertexCount(); k++)
-				{
-					i->shape[k].color = i->color;
-				}
-			}
-
-			if (selectedShape)
-			{
-				if (&(*i) != selectedShape && cd::intersects(i->collision, selectedShape->collision))
-				{
-					for (int k = 0; k < i->shape.getVertexCount(); k++)
-					{
-						i->shape[k].color = sf::Color::Red;
-					}
-					for (int k = 0; k < selectedShape->shape.getVertexCount(); k++)
-					{
-						selectedShape->shape[k].color = sf::Color::Red;
-					}
-				}
-			}
-
-			
-		}
-		
-		if (selectedShape)
-		{
-			selectedShape->rotate(angle);
-			selectedShape->updateCollision();
-		}
-
 		window.clear();
 
 		for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
 		{
-			window.draw(*i);
+			(*i)->updateCollision();
+			window.draw(**i);
 		}
 
 		window.draw(newShape);

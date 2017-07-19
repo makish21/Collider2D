@@ -12,8 +12,9 @@ namespace cd
 	class Projection
 	{
 	public:
+		explicit Projection<T>(const CircleShapeCollision& circle, const VECTOR<float>& axis);
 		explicit Projection<T>(const VECTOR<T>& position, const T& radius, const VECTOR<T>& axis);
-		explicit Projection<T>(const std::vector<VECTOR<T>>& vertices, const VECTOR<T>& axis);
+		explicit Projection<T>(const ConvexShapeCollision& convex, const VECTOR<float>& axis);
 
 		~Projection();
 

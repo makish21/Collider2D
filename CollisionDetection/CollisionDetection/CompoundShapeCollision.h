@@ -9,8 +9,8 @@ namespace cd
 {
 	enum PrimitiveType
 	{
-		TrianglesStrip,
-		TrianglesFan,
+		TriangleStrip,
+		TriangleFan,
 	};
 
 	class CompoundShapeCollision :
@@ -18,15 +18,19 @@ namespace cd
 	{
 	public:
 		CompoundShapeCollision();
+		CompoundShapeCollision(const std::vector<ConvexShapeCollision>& convexShapes);
 		CompoundShapeCollision(const std::vector<VECTOR<float>>& vertices, const PrimitiveType& type);
 
-		virtual ~CompoundShapeCollision();
+		~CompoundShapeCollision();
 
+		void append(const ConvexShapeCollision& convex);
+		void append(const std::vector<VECTOR<float>>& vertices, const PrimitiveType& type);
+		void clear();
+
+		virtual bool intersects(const Collision& other) const;
 		virtual bool intersects(const CompoundShapeCollision& other) const;
 		virtual bool intersects(const ConvexShapeCollision& convex) const;
 		virtual bool intersects(const CircleShapeCollision& circle) const;
-
-		virtual bool intersects(const Collision& other) const;
 
 		virtual bool contains(const VECTOR<float>& point) const;
 

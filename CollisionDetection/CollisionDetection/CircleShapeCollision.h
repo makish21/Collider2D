@@ -21,12 +21,10 @@ namespace cd
 		const VECTOR<float>& getPosition() const;
 		const float& getRadius() const;
 
-		// TODO 
+		virtual bool intersects(const Collision& other) const;
 		virtual bool intersects(const CompoundShapeCollision& compound) const;
 		virtual bool intersects(const ConvexShapeCollision& convex) const;
 		virtual bool intersects(const CircleShapeCollision& other) const;
-
-		virtual bool intersects(const Collision& other) const;
 
 		virtual bool contains(const VECTOR<float>& point) const;
 
