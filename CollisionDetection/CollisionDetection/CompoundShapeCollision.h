@@ -18,12 +18,14 @@ namespace cd
 	{
 	public:
 		CompoundShapeCollision();
-		CompoundShapeCollision(const std::vector<ConvexShapeCollision>& convexShapes);
+		CompoundShapeCollision(const std::vector<Collision*>& collisions);
 		CompoundShapeCollision(const std::vector<VECTOR<float>>& vertices, const PrimitiveType& type);
 
 		~CompoundShapeCollision();
 
+		void append(Collision* collision);
 		void append(const ConvexShapeCollision& convex);
+		void append(const CircleShapeCollision& circle);
 		void append(const std::vector<VECTOR<float>>& vertices, const PrimitiveType& type);
 		void clear();
 
@@ -35,7 +37,7 @@ namespace cd
 		virtual bool contains(const VECTOR<float>& point) const;
 
 	private:
-		std::vector<ConvexShapeCollision> convexShapes_;
+		std::vector<Collision*> convexShapes_;
 	};
 
 } // namespace cd

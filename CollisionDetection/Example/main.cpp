@@ -16,6 +16,9 @@ void main()
 	sf::VertexArray newShape(sf::TrianglesStrip);
 	CollidableShape* selectedShape = nullptr;
 
+	sf::RectangleShape point(sf::Vector2f(4.f, 4.f));
+	point.setOrigin(2.f, 2.f);
+	point.setFillColor(sf::Color::White);
 	std::vector<sf::RectangleShape> points;
 	sf::VertexArray lines(sf::LinesStrip);
 
@@ -26,6 +29,8 @@ void main()
 	collidableShapes.push_back(new CircleCollidableShape(sf::Vector2f(400.f, 300.f), 50.f, sf::Color::Magenta));
 
 	sf::Event event;
+
+	float angle = 0.0f;
 
 	while (window.isOpen())
 	{
@@ -45,31 +50,20 @@ void main()
 				{
 					selectedShape->setPosition(mousePosition);
 					selectedShape->updateCollision();
-
-					for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
-					{
-						if ((*i) != selectedShape)
-						{
-							if ((*i)->getCollision().intersects(selectedShape->getCollision()))
-							{
-								(*i)->setColor(sf::Color::Red);
-								selectedShape->setColor(sf::Color::Red);
-							}
-							else
-							{
-								(*i)->setColor((*i)->getDefaultColor());
-								selectedShape->setColor(selectedShape->getDefaultColor());
-							}
-						}
-					}
 				}
 				break;
 
 			case sf::Event::MouseButtonReleased:
+
+				selectedShape = nullptr;
+
 				switch (event.mouseButton.button)
 				{
 				case sf::Mouse::Left:
-					selectedShape = nullptr;
+					break;
+
+				case sf::Mouse::Right:
+					angle = 0.0f;
 					break;
 
 				default:
@@ -79,26 +73,26 @@ void main()
 				break;
 
 			case sf::Event::MouseButtonPressed:
+				for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
+				{
+					if ((*i)->getCollision().contains(mousePosition))
+					{
+						selectedShape = (*i);
+					}
+				}
 
 				switch (event.mouseButton.button)
 				{
 				case sf::Mouse::Left:
 				{
-					for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
+					if (selectedShape)
 					{
-						if ((*i)->getCollision().contains(mousePosition))
-						{
-							selectedShape = (*i);
-							selectedShape->setOrigin(selectedShape->getOrigin() - selectedShape->getPosition() + mousePosition);
-							selectedShape->setPosition(mousePosition);
-						}
+						selectedShape->setOrigin(selectedShape->getInverseTransform().transformPoint(mousePosition));
+						selectedShape->setPosition(mousePosition);
 					}
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
 					{
-						sf::RectangleShape point(sf::Vector2f(4.f, 4.f));
-						point.setOrigin(2.f, 2.f);
-						point.setFillColor(sf::Color::White);
 						point.setPosition(mousePosition);
 
 						points.push_back(point);
@@ -116,9 +110,6 @@ void main()
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
 					{
-						sf::RectangleShape point(sf::Vector2f(4.f, 4.f));
-						point.setOrigin(2.f, 2.f);
-						point.setFillColor(sf::Color::White);
 						point.setPosition(mousePosition);
 
 						points.push_back(point);
@@ -137,6 +128,15 @@ void main()
 
 					break;
 				}
+
+				case sf::Mouse::Right:
+					if (selectedShape)
+					{
+						selectedShape->setOrigin(selectedShape->getInverseTransform().transformPoint(mousePosition));
+						selectedShape->setPosition(mousePosition);
+						angle = 0.3f;
+					}
+					break;
 
 				default:
 					break;
@@ -180,15 +180,39 @@ void main()
 			}
 		}
 
+		if (selectedShape)
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+			{
+				selectedShape->rotate(angle);
+				selectedShape->updateCollision();
+			}
+			
+			for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
+			{
+				if ((*i) != selectedShape)
+				{
+					if ((*i)->getCollision().intersects(selectedShape->getCollision()))
+					{
+						(*i)->setColor(sf::Color::Red);
+						selectedShape->setColor(sf::Color::Red);
+					}
+					else
+					{
+						(*i)->setColor((*i)->getDefaultColor());
+						selectedShape->setColor(selectedShape->getDefaultColor());
+					}
+				}
+			}
+		}
+
 		window.clear();
 
 		for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
 		{
-			(*i)->updateCollision();
 			window.draw(**i);
 		}
 
-		window.draw(newShape);
 		window.draw(lines);
 
 		for (auto i = points.begin(); i != points.end(); i++)

@@ -3,6 +3,8 @@
 
 #include <CompoundShapeCollision.h>
 
+#include <CircleShapeCollision.h>
+
 class CompoundCollidableShape :
 	public CollidableShape
 {
@@ -15,8 +17,6 @@ public:
 	virtual void updateCollision();
 	virtual void setColor(const sf::Color& color);
 	virtual const cd::Collision& getCollision() const;
-	//virtual bool intersects(const CollidableShape& other) const;
-	//virtual bool contains(const sf::Vector2f& point) const;
 
 private:
 	cd::CompoundShapeCollision compoundCollision_;

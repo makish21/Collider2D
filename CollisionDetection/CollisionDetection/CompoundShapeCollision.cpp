@@ -1,5 +1,6 @@
 #include "CompoundShapeCollision.h"
 #include "ConvexShapeCollision.h"
+#include "CircleShapeCollision.h"
 
 namespace cd
 {
@@ -7,8 +8,8 @@ namespace cd
 	{
 	}
 
-	CompoundShapeCollision::CompoundShapeCollision(const std::vector<ConvexShapeCollision>& convexShapes) :
-		convexShapes_(convexShapes)
+	CompoundShapeCollision::CompoundShapeCollision(const std::vector<Collision*>& collisions) :
+		convexShapes_(collisions)
 	{
 	}
 
@@ -21,9 +22,22 @@ namespace cd
 	{
 	}
 
+	void CompoundShapeCollision::append(Collision * collision)
+	{
+		if (collision)
+		{
+			convexShapes_.push_back(collision);
+		}
+	}
+
 	void CompoundShapeCollision::append(const ConvexShapeCollision & convex)
 	{
-		convexShapes_.push_back(convex);
+		convexShapes_.push_back(new ConvexShapeCollision(convex));
+	}
+
+	void CompoundShapeCollision::append(const CircleShapeCollision & circle)
+	{
+		convexShapes_.push_back(new CircleShapeCollision(circle));
 	}
 
 	void CompoundShapeCollision::append(const std::vector<VECTOR<float>>& vertices, const PrimitiveType & type)
@@ -31,34 +45,40 @@ namespace cd
 		switch (type)
 		{
 		case TriangleStrip:
-			for (int i = 2; i < vertices.size(); i++)
+			//i: [2], [2], [2], [3], [3], [3]...[N]
+			//j: [0], [1], [2], [0], [1], [2]...[2]
+			//k: [0], [1], [2], [1], [2], [3]...[N]
+			for (size_t i = 2; i < vertices.size(); i++)
 			{
 				ConvexShapeCollision triangle(3);
 
-				for (int j = 0, k = i - 2;
+				for (size_t j = 0, k = i - 2;
 					k <= i;
 					j++, k++)
 				{
 					triangle[j] = vertices[k];
 				}
 
-				convexShapes_.push_back(triangle);
+				convexShapes_.push_back(new ConvexShapeCollision(triangle));
 			}
 			break;
 
 		case TriangleFan:
-			for (int i = 2; i < vertices.size(); i++)
+			//i: [2], [2], [2], [3], [3], [3]...[N]
+			//j: [0], [1], [2], [0], [1], [2]...[2]
+			//k: [0], [1], [2], [0], [2], [3]...[N]
+			for (size_t i = 2; i < vertices.size(); i++)
 			{
 				ConvexShapeCollision triangle(3);
 
-				for (int j = 0, k = 0;
+				for (size_t j = 0, k = 0;
 					k <= i;
 					j++, k = i - 1 + j - 1)
 				{
 					triangle[j] = vertices[k];
 				}
 
-				convexShapes_.push_back(triangle);
+				convexShapes_.push_back(new ConvexShapeCollision(triangle));
 			}
 			break;
 		default:
@@ -77,7 +97,7 @@ namespace cd
 		{
 			for (auto j = other.convexShapes_.begin(); j != other.convexShapes_.end(); j++)
 			{
-				if (i->intersects(*j))
+				if ((*i)->intersects(**j))
 				{
 					return true;
 				}
@@ -90,7 +110,7 @@ namespace cd
 	{
 		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
 		{
-			if (i->intersects(convex))
+			if ((*i)->intersects(convex))
 			{
 				return true;
 			}
@@ -102,7 +122,7 @@ namespace cd
 	{
 		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
 		{
-			if (i->intersects(circle))
+			if ((*i)->intersects(circle))
 			{
 				return true;
 			}
@@ -119,7 +139,7 @@ namespace cd
 	{
 		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
 		{
-			if (i->contains(point))
+			if ((*i)->contains(point))
 			{
 				return true;
 			}
