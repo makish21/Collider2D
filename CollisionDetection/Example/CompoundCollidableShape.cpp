@@ -29,7 +29,8 @@ void CompoundCollidableShape::updateCollision()
 		vertices.push_back(getTransform().transformPoint(shape_[i].position));
 	}
 
-	compoundCollision_ = cd::CompoundShapeCollision(vertices, primitiveType_);
+	compoundCollision_.clear();
+	compoundCollision_.append(vertices, primitiveType_);
 }
 
 void CompoundCollidableShape::setColor(const sf::Color & color)

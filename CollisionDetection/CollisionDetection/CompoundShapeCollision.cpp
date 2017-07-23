@@ -20,6 +20,7 @@ namespace cd
 
 	CompoundShapeCollision::~CompoundShapeCollision()
 	{
+		//clear();
 	}
 
 	void CompoundShapeCollision::append(Collision * collision)
@@ -88,6 +89,11 @@ namespace cd
 
 	void CompoundShapeCollision::clear()
 	{
+		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
+		{
+			delete *i;
+		}
+
 		convexShapes_.clear();
 	}
 
