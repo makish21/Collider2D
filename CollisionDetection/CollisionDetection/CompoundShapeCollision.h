@@ -9,8 +9,9 @@ namespace cd
 {
 	enum PrimitiveType
 	{
+		Triangles,
 		TriangleStrip,
-		TriangleFan,
+		TriangleFan
 	};
 
 	class CompoundShapeCollision :
@@ -37,7 +38,7 @@ namespace cd
 		virtual bool contains(const VECTOR<float>& point) const;
 
 	private:
-		std::vector<Collision*> convexShapes_;
+		std::vector<Collision*> collisionShapes_;
 	};
 
 } // namespace cd

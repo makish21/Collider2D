@@ -9,7 +9,7 @@ namespace cd
 	}
 
 	CompoundShapeCollision::CompoundShapeCollision(const std::vector<Collision*>& collisions) :
-		convexShapes_(collisions)
+		collisionShapes_(collisions)
 	{
 	}
 
@@ -27,24 +27,42 @@ namespace cd
 	{
 		if (collision)
 		{
-			convexShapes_.push_back(collision);
+			collisionShapes_.push_back(collision);
 		}
 	}
 
 	void CompoundShapeCollision::append(const ConvexShapeCollision & convex)
 	{
-		convexShapes_.push_back(new ConvexShapeCollision(convex));
+		collisionShapes_.push_back(new ConvexShapeCollision(convex));
 	}
 
 	void CompoundShapeCollision::append(const CircleShapeCollision & circle)
 	{
-		convexShapes_.push_back(new CircleShapeCollision(circle));
+		collisionShapes_.push_back(new CircleShapeCollision(circle));
 	}
 
 	void CompoundShapeCollision::append(const std::vector<VECTOR<float>>& vertices, const PrimitiveType & type)
 	{
 		switch (type)
 		{
+		case Triangles:
+			//i: [2], [2], [2], [5], [5], [5]...[N]
+			//j: [0], [1], [2], [0], [1], [2]...[2]
+			//k: [0], [1], [2], [3], [4], [5]...[N]
+			for (size_t i = 2; i < vertices.size(); i+=3)
+			{
+				ConvexShapeCollision triangle(3);
+
+				for (size_t j = 0, k = i - 2; 
+					 k <= i; j++, k++)
+				{
+					triangle[j] = vertices[k];
+				}
+
+				collisionShapes_.push_back(new ConvexShapeCollision(triangle));
+			}
+			break;
+
 		case TriangleStrip:
 			//i: [2], [2], [2], [3], [3], [3]...[N]
 			//j: [0], [1], [2], [0], [1], [2]...[2]
@@ -60,7 +78,7 @@ namespace cd
 					triangle[j] = vertices[k];
 				}
 
-				convexShapes_.push_back(new ConvexShapeCollision(triangle));
+				collisionShapes_.push_back(new ConvexShapeCollision(triangle));
 			}
 			break;
 
@@ -79,7 +97,7 @@ namespace cd
 					triangle[j] = vertices[k];
 				}
 
-				convexShapes_.push_back(new ConvexShapeCollision(triangle));
+				collisionShapes_.push_back(new ConvexShapeCollision(triangle));
 			}
 			break;
 		default:
@@ -89,19 +107,19 @@ namespace cd
 
 	void CompoundShapeCollision::clear()
 	{
-		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
+		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
 		{
 			delete *i;
 		}
 
-		convexShapes_.clear();
+		collisionShapes_.clear();
 	}
 
 	bool CompoundShapeCollision::intersects(const CompoundShapeCollision & other) const
 	{
-		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
+		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
 		{
-			for (auto j = other.convexShapes_.begin(); j != other.convexShapes_.end(); j++)
+			for (auto j = other.collisionShapes_.begin(); j != other.collisionShapes_.end(); j++)
 			{
 				if ((*i)->intersects(**j))
 				{
@@ -114,7 +132,7 @@ namespace cd
 
 	bool CompoundShapeCollision::intersects(const ConvexShapeCollision & convex) const
 	{
-		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
+		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
 		{
 			if ((*i)->intersects(convex))
 			{
@@ -126,7 +144,7 @@ namespace cd
 
 	bool CompoundShapeCollision::intersects(const CircleShapeCollision & circle) const
 	{
-		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
+		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
 		{
 			if ((*i)->intersects(circle))
 			{
@@ -143,7 +161,7 @@ namespace cd
 
 	bool CompoundShapeCollision::contains(const VECTOR<float>& point) const
 	{
-		for (auto i = convexShapes_.begin(); i != convexShapes_.end(); i++)
+		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
 		{
 			if ((*i)->contains(point))
 			{
