@@ -2,6 +2,7 @@
 #define PROJECTION_HPP
 
 #include <vector>
+#include <algorithm>
 
 #include "Collision.hpp"
 
@@ -13,8 +14,8 @@ namespace cd
 	{
 	public:
 		explicit Projection<T>(const CircleShapeCollision& circle, const VECTOR<float>& axis);
-		explicit Projection<T>(const VECTOR<T>& position, const T& radius, const VECTOR<T>& axis);
 		explicit Projection<T>(const ConvexShapeCollision& convex, const VECTOR<float>& axis);
+		explicit Projection<T>(const AABBCollision& aabb, const VECTOR<float>& axis);
 
 		~Projection();
 

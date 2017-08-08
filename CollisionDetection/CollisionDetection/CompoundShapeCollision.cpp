@@ -1,6 +1,7 @@
 #include "CompoundShapeCollision.h"
 #include "ConvexShapeCollision.h"
 #include "CircleShapeCollision.h"
+#include "AABBCollision.h"
 
 namespace cd
 {
@@ -20,7 +21,7 @@ namespace cd
 
 	CompoundShapeCollision::~CompoundShapeCollision()
 	{
-		//clear();
+		clear();
 	}
 
 	void CompoundShapeCollision::append(Collision * collision)
@@ -109,7 +110,11 @@ namespace cd
 	{
 		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
 		{
-			delete *i;
+			if (*i)
+			{
+				delete *i;
+				*i = nullptr;
+			}
 		}
 
 		collisionShapes_.clear();
@@ -147,6 +152,18 @@ namespace cd
 		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
 		{
 			if ((*i)->intersects(circle))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool CompoundShapeCollision::intersects(const AABBCollision & aabb) const
+	{
+		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)
+		{
+			if ((*i)->intersects(aabb))
 			{
 				return true;
 			}

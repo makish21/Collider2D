@@ -11,6 +11,7 @@ namespace cd
 	class CompoundShapeCollision;
 	class ConvexShapeCollision;
 	class CircleShapeCollision;
+	class AABBCollision;
 
 	class Collision
 	{
@@ -21,6 +22,7 @@ namespace cd
 		virtual bool intersects(const CompoundShapeCollision&) const = 0;
 		virtual bool intersects(const CircleShapeCollision&) const = 0;
 		virtual bool intersects(const ConvexShapeCollision&) const = 0;
+		virtual bool intersects(const AABBCollision&) const = 0;
 
 		virtual bool contains(const VECTOR<float>& point) const = 0;
 	};

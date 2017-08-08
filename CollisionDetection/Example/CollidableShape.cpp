@@ -10,6 +10,11 @@ CollidableShape::~CollidableShape()
 {
 }
 
+void CollidableShape::resetColor()
+{
+	setColor(color);
+}
+
 void CollidableShape::setDefaultColor(const sf::Color & color)
 {
 	this->color = color;

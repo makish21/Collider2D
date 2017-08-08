@@ -1,6 +1,7 @@
 #include "ConvexShapeCollision.h"
 #include "CircleShapeCollision.h"
 #include "CompoundShapeCollision.h"
+#include "AABBCollision.h"
 
 #include "Projection.hpp"
 #include "CollisionDetection.hpp"
@@ -116,6 +117,53 @@ namespace cd
 		cd::Projection<float> projectionCircle(circle, axis);
 		
 		return projectionCircle.overlaps(projectionConvex);
+	}
+
+	bool ConvexShapeCollision::intersects(const AABBCollision & aabb) const
+	{
+		// TODO refactor this:
+
+		VECTOR<float> axis;
+
+		cd::Projection<float> projectionConvex(*this, axis);
+		cd::Projection<float> projectionRect(aabb, axis);
+
+		// i: [0], [1], [2], [3]...[n];
+		// j: [n], [0], [1], [2]...[n-1];
+		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
+		{
+			/*if (aabb.contains(vertices_[i]))
+			{
+				return true;
+			}*/
+
+			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
+
+			projectionConvex = cd::Projection<float>(*this, axis);
+			projectionRect = cd::Projection<float>(aabb, axis);
+
+			if (!projectionConvex.overlaps(projectionRect))
+			{
+				return false;
+			}
+		}
+
+		axis = VECTOR<float>(1.f, 0.f);
+		projectionConvex = cd::Projection<float>(*this, axis);
+		projectionRect = cd::Projection<float>(aabb, axis);
+		if (!projectionConvex.overlaps(projectionRect))
+		{
+			return false;
+		}
+
+		axis = VECTOR<float>(0.f, 1.f);
+		projectionConvex = cd::Projection<float>(*this, axis);
+		projectionRect = cd::Projection<float>(aabb, axis);
+		if (!projectionConvex.overlaps(projectionRect))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	bool ConvexShapeCollision::intersects(const Collision& other) const

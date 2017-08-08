@@ -27,6 +27,19 @@ void CircleCollidableShape::updateCollision()
 	circleCollision_.setPosition(getTransform().transformPoint(shape_.getPosition()));
 }
 
+void CircleCollidableShape::showWireframe(bool wireframe)
+{
+	if (wireframe)
+	{
+		shape_.setOutlineThickness(1.f);
+		shape_.setOutlineColor(sf::Color::Yellow);
+	}
+	else
+	{
+		shape_.setOutlineThickness(0.f);
+	}
+}
+
 void CircleCollidableShape::setColor(const sf::Color & color)
 {
 	shape_.setFillColor(color);

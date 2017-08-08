@@ -1,6 +1,8 @@
 #ifndef CIRCLE_SHAPE_COLLISION_H
 #define CIRCLE_SHAPE_COLLISION_H
 
+#include <algorithm>
+
 #include "Collision.hpp"
 #include "CollisionDetection.hpp"
 
@@ -25,6 +27,7 @@ namespace cd
 		virtual bool intersects(const CompoundShapeCollision& compound) const;
 		virtual bool intersects(const ConvexShapeCollision& convex) const;
 		virtual bool intersects(const CircleShapeCollision& other) const;
+		virtual bool intersects(const AABBCollision& aabb) const;
 
 		virtual bool contains(const VECTOR<float>& point) const;
 

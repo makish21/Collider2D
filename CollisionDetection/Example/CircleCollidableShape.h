@@ -10,6 +10,7 @@ public:
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
 	virtual void updateCollision();
+	virtual void showWireframe(bool wireframe);
 	virtual void setColor(const sf::Color& color);
 	virtual const cd::Collision& getCollision() const;
 

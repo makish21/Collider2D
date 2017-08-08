@@ -9,10 +9,12 @@ public:
 	CollidableShape(const sf::Color& color);
 	virtual ~CollidableShape();
 
-	void setDefaultColor(const sf::Color& color);
-	const sf::Color& getDefaultColor() const;
+	void resetColor();
+	SFML_DEPRECATED void setDefaultColor(const sf::Color& color);
+	SFML_DEPRECATED const sf::Color& getDefaultColor() const;
 
 	virtual void updateCollision() = 0;
+	virtual void showWireframe(bool wireframe) = 0;
 	virtual void setColor(const sf::Color& color) = 0;
 	virtual const cd::Collision& getCollision() const = 0;
 
