@@ -1,11 +1,14 @@
 #include "ConcaveCollidableShape.h"
 
 
-ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape, const cd::PrimitiveType & type, const sf::Color & color) :
+ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
+											   const cd::PrimitiveType & type,
+											   const sf::Color & color,
+											   sf::Font& font) :
 	shape_(shape),
 	wireframe_(sf::Lines),
 	isWireframeVisible_(false),
-	CollidableShape(color),
+	CollidableShape(color, font),
 	primitiveType_(type)
 {
 	setColor(color);
@@ -54,6 +57,14 @@ void ConcaveCollidableShape::updateCollision()
 				wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
 				wireframe_.append(sf::Vertex(shape_[i - 1].position, sf::Color::Yellow));
 				break;
+
+			case cd::Triangles:
+				if ((i + 1) % 3 == 0)
+				{
+					wireframe_.append(sf::Vertex(shape_[i - 1].position, sf::Color::Yellow));
+					wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
+					wireframe_.append(sf::Vertex(shape_[i - 2].position, sf::Color::Yellow));
+				}
 
 			default:
 				break;

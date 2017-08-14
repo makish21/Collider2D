@@ -5,32 +5,47 @@
 #include "CircleCollidableShape.h"
 #include "RectangleCollidableShape.h"
 
+
+sf::Color generateRandomColor()
+{
+	return sf::Color(std::rand() % 255,
+					 std::rand() % 255,
+					 std::rand() % 255);
+}
+
 int main()
 {
-	std::srand(static_cast<unsigned int>(std::time(0)));
-
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 16U;
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Collision Example", sf::Style::Close, settings);
 	window.setFramerateLimit(60U);
 	window.setKeyRepeatEnabled(false);
 
-	sf::VertexArray newShape;
+	sf::VertexArray newConcaveShape;
 	CollidableShape* selectedShape = nullptr;
 
-	sf::VertexArray lines(sf::LineStrip);
+	sf::VertexArray lines(sf::Lines);
 
 	sf::Vector2f mousePosition;
 
+	sf::Font helvetica;
+	helvetica.loadFromFile("HelveticaRegular.ttf");
+
 	std::vector<CollidableShape*> collidableShapes;
 
-	collidableShapes.push_back(new CircleCollidableShape(sf::Vector2f(400.f, 300.f), 50.f, sf::Color::Cyan));
-	collidableShapes.push_back(new RectangleCollidableShape(sf::Rect<float>(100.f, 100.f, 100.f, 250.f), sf::Color::Magenta));
+	collidableShapes.push_back(new CircleCollidableShape(sf::Vector2f(400.f, 300.f), 50.f,
+														 generateRandomColor(),
+														 helvetica));
+	collidableShapes.push_back(new RectangleCollidableShape(sf::Rect<float>(100.f, 100.f, 100.f, 250.f),
+															generateRandomColor(),
+															helvetica));
 
 	sf::Event event;
 
 	while (window.isOpen())
 	{
+		std::srand(static_cast<unsigned int>(std::time(0)));
+
 		if (window.hasFocus())
 		{
 			while (window.pollEvent(event))
@@ -81,28 +96,61 @@ int main()
 
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
 						{
-							newShape.setPrimitiveType(sf::TrianglesStrip);
-							newShape.append(sf::Vertex(mousePosition, sf::Color::Transparent));
+							newConcaveShape.setPrimitiveType(sf::TrianglesStrip);
+							newConcaveShape.append(sf::Vertex(mousePosition,
+															  sf::Color::Transparent));
 
-							lines.append(sf::Vertex(mousePosition, sf::Color::White));
+							lines.append(sf::Vertex(mousePosition,
+													sf::Color::White));
 
-							if (newShape.getVertexCount() >= 2)
+							if (newConcaveShape.getVertexCount() >= 2)
 							{
-								lines.append(sf::Vertex(newShape[newShape.getVertexCount() - 2].position, sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 2].position,
+														sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 1].position,
+														sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 2].position,
+														sf::Color::White));
 							}
 						}
 
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
 						{
-							newShape.setPrimitiveType(sf::TrianglesFan);
-							newShape.append(sf::Vertex(mousePosition, sf::Color::Transparent));
+							newConcaveShape.setPrimitiveType(sf::TrianglesFan);
+							newConcaveShape.append(sf::Vertex(mousePosition,
+															  sf::Color::Transparent));
 
-							lines.append(sf::Vertex(mousePosition, sf::Color::White));
+							lines.append(sf::Vertex(mousePosition,
+													sf::Color::White));
 
-							if (newShape.getVertexCount() >= 2)
+							if (newConcaveShape.getVertexCount() >= 2)
 							{
-								lines.append(sf::Vertex(newShape[0].position, sf::Color::White));
-								lines.append(sf::Vertex(newShape[newShape.getVertexCount() - 1].position, sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[0].position,
+														sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 1].position,
+														sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 1].position,
+														sf::Color::White));
+							}
+						}
+
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+						{
+							newConcaveShape.setPrimitiveType(sf::Triangles);
+							newConcaveShape.append(sf::Vertex(mousePosition,
+															  sf::Color::Transparent));
+
+							lines.append(sf::Vertex(mousePosition,
+														sf::Color::White));
+
+							if (newConcaveShape.getVertexCount() % 3 == 0)
+							{
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 2].position,
+														sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 1].position,
+														sf::Color::White));
+								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 3].position,
+														sf::Color::White));
 							}
 						}
 
@@ -126,9 +174,12 @@ int main()
 					{
 					case sf::Keyboard::LControl:
 					{
-						collidableShapes.push_back(new ConcaveCollidableShape(newShape, cd::TriangleStrip, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255)));
+						collidableShapes.push_back(new ConcaveCollidableShape(newConcaveShape,
+																			  cd::TriangleStrip,
+																			  generateRandomColor(),
+																			  helvetica));
 
-						newShape.clear();
+						newConcaveShape.clear();
 						lines.clear();
 
 						break;
@@ -136,11 +187,25 @@ int main()
 
 					case sf::Keyboard::LShift:
 					{
-						ConcaveCollidableShape collidableShape(newShape, cd::TriangleFan, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
+						collidableShapes.push_back(new ConcaveCollidableShape(newConcaveShape,
+																			  cd::TriangleFan,
+																			  generateRandomColor(),
+																			  helvetica));
 
-						collidableShapes.push_back(new ConcaveCollidableShape(collidableShape));
+						newConcaveShape.clear();
+						lines.clear();
 
-						newShape.clear();
+						break;
+					}
+
+					case sf::Keyboard::LAlt:
+					{
+						collidableShapes.push_back(new ConcaveCollidableShape(newConcaveShape,
+																			  cd::Triangles,
+																			  generateRandomColor(),
+																			  helvetica));
+
+						newConcaveShape.clear();
 						lines.clear();
 
 						break;

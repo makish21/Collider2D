@@ -51,3 +51,5 @@
 *.lastcodeanalysissucceeded
 *.iobj
 *.ipdb
+*.enc
+*.ttf

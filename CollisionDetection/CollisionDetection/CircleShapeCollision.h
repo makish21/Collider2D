@@ -23,6 +23,8 @@ namespace cd
 		const VECTOR<float>& getPosition() const;
 		const float& getRadius() const;
 
+		virtual Projection<float> getProjection(const VECTOR<float>& axis) const;
+
 		virtual bool intersects(const Collision& other) const;
 		virtual bool intersects(const CompoundShapeCollision& compound) const;
 		virtual bool intersects(const ConvexShapeCollision& convex) const;

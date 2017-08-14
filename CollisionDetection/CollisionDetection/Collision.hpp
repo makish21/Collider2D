@@ -1,6 +1,8 @@
 #ifndef COLLISION_HPP
 #define COLLISION_HPP
 
+#include "Projection.hpp"
+
 ////////////////////////////////////
 #include <SFML\System\Vector2.hpp>//
 #define VECTOR sf::Vector2        //
@@ -17,6 +19,8 @@ namespace cd
 	{
 	public:
 		virtual ~Collision() {};
+
+		virtual Projection<float> getProjection(const VECTOR<float>& axis) const = 0;
 
 		virtual bool intersects(const Collision&) const = 0;
 		virtual bool intersects(const CompoundShapeCollision&) const = 0;

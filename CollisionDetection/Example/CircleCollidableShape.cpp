@@ -1,15 +1,22 @@
 #include "CircleCollidableShape.h"
 
 
-CircleCollidableShape::CircleCollidableShape(const sf::Vector2f & position, const float & radius, const sf::Color & color) :
+CircleCollidableShape::CircleCollidableShape(const sf::Vector2f & position,
+											 const float & radius,
+											 const sf::Color & color,
+											 sf::Font& font) :
 	circleCollision_(position, radius),
 	radius_(radius),
 	shape_(radius, 30),
-	CollidableShape(color)
+	CollidableShape(color, font)
 {
 	shape_.setOrigin(radius, radius);
 	shape_.setPosition(position);
 	setColor(color);
+	text.setString(L"Circle");
+	text.setFillColor(sf::Color::White);
+	text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+	updateCollision();
 }
 
 CircleCollidableShape::~CircleCollidableShape()
@@ -20,11 +27,14 @@ void CircleCollidableShape::draw(sf::RenderTarget & target, sf::RenderStates sta
 {
 	states.transform *= getTransform();
 	target.draw(shape_, states);
+
+	target.draw(text);
 }
 
 void CircleCollidableShape::updateCollision()
 {
 	circleCollision_.setPosition(getTransform().transformPoint(shape_.getPosition()));
+	text.setPosition(getTransform().transformPoint(shape_.getPosition()));
 }
 
 void CircleCollidableShape::showWireframe(bool wireframe)

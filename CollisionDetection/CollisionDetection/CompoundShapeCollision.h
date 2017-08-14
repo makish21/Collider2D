@@ -30,6 +30,8 @@ namespace cd
 		void append(const std::vector<VECTOR<float>>& vertices, const PrimitiveType& type);
 		void clear();
 
+		virtual Projection<float> getProjection(const VECTOR<float>& axis) const;
+
 		virtual bool intersects(const Collision& other) const;
 		virtual bool intersects(const CompoundShapeCollision& other) const;
 		virtual bool intersects(const ConvexShapeCollision& convex) const;

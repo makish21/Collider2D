@@ -46,6 +46,22 @@ namespace cd
 		vertices_.clear();
 	}
 
+	Projection<float> ConvexShapeCollision::getProjection(const VECTOR<float>& axis) const
+	{
+		float min = dotProduct(axis, vertices_[0]);
+		float max = min;
+
+		for (size_t i = 0; i < vertices_.size(); i++)
+		{
+			float dp = dotProduct(axis, vertices_[i]);
+
+			min = std::min(min, dp);
+			max = std::max(max, dp);
+		}
+
+		return Projection<float>(min, max);
+	}
+
 	bool ConvexShapeCollision::intersects(const CompoundShapeCollision & compound) const
 	{
 		return compound.intersects(*this);
@@ -60,21 +76,15 @@ namespace cd
 		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
 		{
 			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
-
-			cd::Projection<float> projectionThis(*this, axis);
-			cd::Projection<float> projectionOther(other, axis);
 	
-			if (!projectionThis.overlaps(projectionOther))
+			if (!getProjection(axis).overlaps(other.getProjection(axis)))
 			{
 				return false;
 			}
 	
 			axis = normalize(normal(VECTOR<float>(other.vertices_[i] - other.vertices_[j])));
 	
-			projectionThis = cd::Projection<float>(*this, axis);
-			projectionOther = cd::Projection<float>(other, axis);
-	
-			if (!projectionThis.overlaps(projectionOther))
+			if (!getProjection(axis).overlaps(other.getProjection(axis)))
 			{
 				return false;
 			}
@@ -94,6 +104,7 @@ namespace cd
 		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
 		{
 			float distance = vectorLength(circle.getPosition() - vertices_[i]);
+
 			if (distance < nearestPointDistance)
 			{
 				nearestPoint = vertices_[i];
@@ -102,68 +113,43 @@ namespace cd
 
 			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
 
-			cd::Projection<float> projectionConvex(*this, axis);
-			cd::Projection<float> projectionCircle(circle, axis);
-
-			if (!projectionConvex.overlaps(projectionCircle))
+			if (!getProjection(axis).overlaps(circle.getProjection(axis)))
 			{
 				return false;
 			}
 		}
 
 		axis = normalize(VECTOR<float>(nearestPoint - circle.getPosition()));
-
-		cd::Projection<float> projectionConvex(*this, axis);
-		cd::Projection<float> projectionCircle(circle, axis);
 		
-		return projectionCircle.overlaps(projectionConvex);
+		return getProjection(axis).overlaps(circle.getProjection(axis));
 	}
 
 	bool ConvexShapeCollision::intersects(const AABBCollision & aabb) const
 	{
-		// TODO refactor this:
-
 		VECTOR<float> axis;
-
-		cd::Projection<float> projectionConvex(*this, axis);
-		cd::Projection<float> projectionRect(aabb, axis);
 
 		// i: [0], [1], [2], [3]...[n];
 		// j: [n], [0], [1], [2]...[n-1];
 		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
 		{
-			/*if (aabb.contains(vertices_[i]))
-			{
-				return true;
-			}*/
-
 			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
 
-			projectionConvex = cd::Projection<float>(*this, axis);
-			projectionRect = cd::Projection<float>(aabb, axis);
-
-			if (!projectionConvex.overlaps(projectionRect))
+			if (!getProjection(axis).overlaps(aabb.getProjection(axis)))
 			{
 				return false;
 			}
 		}
 
 		axis = VECTOR<float>(1.f, 0.f);
-		projectionConvex = cd::Projection<float>(*this, axis);
-		projectionRect = cd::Projection<float>(aabb, axis);
-		if (!projectionConvex.overlaps(projectionRect))
+
+		if (!getProjection(axis).overlaps(aabb.getProjection(axis)))
 		{
 			return false;
 		}
 
 		axis = VECTOR<float>(0.f, 1.f);
-		projectionConvex = cd::Projection<float>(*this, axis);
-		projectionRect = cd::Projection<float>(aabb, axis);
-		if (!projectionConvex.overlaps(projectionRect))
-		{
-			return false;
-		}
-		return true;
+
+		return getProjection(axis).overlaps(aabb.getProjection(axis));
 	}
 
 	bool ConvexShapeCollision::intersects(const Collision& other) const
@@ -173,21 +159,20 @@ namespace cd
 
 	bool ConvexShapeCollision::contains(const VECTOR<float>& point) const
 	{
-		VECTOR<float> axis;
-
 		// i: [0], [1], [2], [3]...[n];
 		// j: [n], [0], [1], [2]...[n-1];
 		for (size_t i = 0, j = vertices_.size() - 1; i < vertices_.size(); i++, j = i - 1)
 		{
-			axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
+			VECTOR<float> axis = normalize(normal(VECTOR<float>(vertices_[i] - vertices_[j])));
 
-			Projection<float> projection(*this, axis);
+			float dp = dotProduct(axis, point);
 
-			if (!projection.contains(point))
+			if (!getProjection(axis).contains(dp))
 			{
 				return false;
 			}
 		}
+
 		return true;
 	}
 

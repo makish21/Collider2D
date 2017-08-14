@@ -120,6 +120,22 @@ namespace cd
 		collisionShapes_.clear();
 	}
 
+	Projection<float> CompoundShapeCollision::getProjection(const VECTOR<float>& axis) const
+	{
+		float min = collisionShapes_[0]->getProjection(axis).min;
+		float max = min;
+
+		for (size_t i = 0; i < collisionShapes_.size(); i++)
+		{
+			Projection<float> projection = collisionShapes_[i]->getProjection(axis);
+
+			min = std::min(projection.min, min);
+			max = std::max(projection.max, max);
+		}
+
+		return Projection<float>(min, max);
+	}
+
 	bool CompoundShapeCollision::intersects(const CompoundShapeCollision & other) const
 	{
 		for (auto i = collisionShapes_.begin(); i != collisionShapes_.end(); i++)

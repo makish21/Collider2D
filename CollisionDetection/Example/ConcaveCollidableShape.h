@@ -8,7 +8,10 @@ class ConcaveCollidableShape :
 	public CollidableShape
 {
 public:
-	ConcaveCollidableShape(const sf::VertexArray& shape, const cd::PrimitiveType& type, const sf::Color& color);
+	ConcaveCollidableShape(const sf::VertexArray& shape,
+						   const cd::PrimitiveType& type,
+						   const sf::Color& color,
+						   sf::Font& font);
 	~ConcaveCollidableShape();
 
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;

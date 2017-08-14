@@ -4,7 +4,10 @@ class CircleCollidableShape :
 	public CollidableShape
 {
 public:
-	CircleCollidableShape(const sf::Vector2f& position, const float& radius, const sf::Color& color);
+	CircleCollidableShape(const sf::Vector2f& position,
+						  const float& radius,
+						  const sf::Color& color,
+						  sf::Font& font);
 	~CircleCollidableShape();
 
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;

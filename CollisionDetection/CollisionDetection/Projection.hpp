@@ -6,35 +6,27 @@
 
 #include "Collision.hpp"
 
-
 namespace cd
 {
 	template<typename T>
 	class Projection
 	{
 	public:
-		explicit Projection<T>(const CircleShapeCollision& circle, const VECTOR<float>& axis);
-		explicit Projection<T>(const ConvexShapeCollision& convex, const VECTOR<float>& axis);
-		explicit Projection<T>(const AABBCollision& aabb, const VECTOR<float>& axis);
+		explicit Projection<T>();
+		explicit Projection<T>(T min, T max);
+		template<typename U>
+		explicit Projection<T>(const Projection<U>& projection);
 
 		~Projection();
 
-		bool overlaps(Projection<T>& other);
-		bool contains(const VECTOR<T>& point);
+		bool overlaps(const Projection<T>& other) const;
+		bool contains(T dot) const;
 
-	private:
-		VECTOR<T> axis_;
-		T min_;
-		T max_;
-
-		bool contains(const T& end);
+		T min;
+		T max;
 	};
 
 #include "Projection.inl"
-
-	// Define the most common types
-	typedef Projection<float>      Projection2f;
-	typedef Projection<double>	   Projection2d;
 }
 
 #endif // PROJECTION

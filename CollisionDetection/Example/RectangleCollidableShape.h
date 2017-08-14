@@ -6,7 +6,9 @@ class RectangleCollidableShape :
 	public CollidableShape
 {
 public:
-	RectangleCollidableShape(const sf::Rect<float> rect, const sf::Color& color);
+	RectangleCollidableShape(const sf::Rect<float> rect,
+							 const sf::Color& color,
+							 sf::Font& font);
 	~RectangleCollidableShape();
 
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;

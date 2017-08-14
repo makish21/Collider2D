@@ -1,8 +1,9 @@
 #include "CollidableShape.h"
 
 
-CollidableShape::CollidableShape(const sf::Color & color) :
-	color(color)
+CollidableShape::CollidableShape(const sf::Color & color, sf::Font& font) :
+	color(color),
+	text("", font, 20)
 {
 }
 
@@ -13,14 +14,4 @@ CollidableShape::~CollidableShape()
 void CollidableShape::resetColor()
 {
 	setColor(color);
-}
-
-void CollidableShape::setDefaultColor(const sf::Color & color)
-{
-	this->color = color;
-}
-
-const sf::Color & CollidableShape::getDefaultColor() const
-{
-	return color;
 }

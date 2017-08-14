@@ -26,6 +26,29 @@ namespace cd
 	{
 	}
 
+	Projection<float> AABBCollision::getProjection(const VECTOR<float>& axis) const
+	{
+		VECTOR<float> rectVertices[4];
+
+		rectVertices[0] = VECTOR<float>(left, top);
+		rectVertices[1] = VECTOR<float>(left + width, top);
+		rectVertices[2] = VECTOR<float>(left + width, top + height);
+		rectVertices[3] = VECTOR<float>(left, top + height);
+
+		float min = dotProduct(axis, rectVertices[0]);
+		float max = min;
+
+		for (int i = 0; i < 4; i++)
+		{
+			float dp = dotProduct(axis, rectVertices[i]);
+
+			min = std::min(min, dp);
+			max = std::max(max, dp);
+		}
+
+		return Projection<float>(min, max);
+	}
+
 	bool AABBCollision::intersects(const Collision & collision) const
 	{
 		return collision.intersects(*this);

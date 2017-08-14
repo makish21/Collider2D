@@ -6,12 +6,10 @@ class CollidableShape :
 	public sf::Transformable, public sf::Drawable
 {
 public:
-	CollidableShape(const sf::Color& color);
+	CollidableShape(const sf::Color& color, sf::Font& font);
 	virtual ~CollidableShape();
 
 	void resetColor();
-	SFML_DEPRECATED void setDefaultColor(const sf::Color& color);
-	SFML_DEPRECATED const sf::Color& getDefaultColor() const;
 
 	virtual void updateCollision() = 0;
 	virtual void showWireframe(bool wireframe) = 0;
@@ -20,4 +18,5 @@ public:
 
 protected:
 	sf::Color color;
+	sf::Text text;
 };
