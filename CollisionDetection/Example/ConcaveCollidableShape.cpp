@@ -13,6 +13,26 @@ ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
 {
 	setColor(color);
 	updateCollision();
+
+	sf::Glyph glyph = font.getGlyph('a', 20, false);
+	text.setFillColor(sf::Color::White);
+	text.setString("Concave");
+	text.setOrigin(text.getGlobalBounds().width / 2, glyph.bounds.height);
+
+	float left = shape_[0].position.x;
+	float top = shape_[0].position.y;
+	float right = left;
+	float down = top;
+
+	for (size_t i = 0; i < shape_.getVertexCount(); i++)
+	{
+		left = std::min(left, shape[i].position.x);
+		top = std::min(top, shape[i].position.y);
+		right = std::max(right, shape[i].position.x);
+		down = std::max(down, shape[i].position.y);
+	}
+	
+	text.setPosition(left + (right - left) / 2.f, top + (down - top) / 2.f);
 }
 
 ConcaveCollidableShape::~ConcaveCollidableShape()
@@ -28,17 +48,22 @@ void ConcaveCollidableShape::draw(sf::RenderTarget & target, sf::RenderStates st
 	{
 		target.draw(wireframe_, states);
 	}
+	
+	target.draw(text, states);
 }
 
 void ConcaveCollidableShape::updateCollision()
 {
-	std::vector<VECTOR<float>> vertices;
+	std::vector<cd::Vector2<float>> vertices;
 
 	wireframe_.clear();
 
+	text.setRotation(-getRotation());
+
 	for (size_t i = 0; i < shape_.getVertexCount(); i++)
 	{
-		vertices.push_back(getTransform().transformPoint(shape_[i].position));
+		sf::Vector2f vertexPosition = getTransform().transformPoint(shape_[i].position);
+		vertices.push_back(cd::Vector2<float>(vertexPosition.x, vertexPosition.y));
 
 		wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
 

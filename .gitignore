@@ -53,3 +53,5 @@
 *.ipdb
 *.enc
 *.ttf
+/CollisionDetection/UnitTest
+*.exp

@@ -12,8 +12,8 @@ namespace cd
 	class Projection
 	{
 	public:
-		explicit Projection<T>();
-		explicit Projection<T>(T min, T max);
+		Projection<T>();
+		Projection<T>(T min, T max);
 		template<typename U>
 		explicit Projection<T>(const Projection<U>& projection);
 

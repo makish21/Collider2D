@@ -1,18 +1,14 @@
 #ifndef COLLISION_HPP
 #define COLLISION_HPP
 
+#include "Vector2.hpp"
 #include "Projection.hpp"
-
-////////////////////////////////////
-#include <SFML\System\Vector2.hpp>//
-#define VECTOR sf::Vector2        //
-////////////////////////////////////
 
 namespace cd
 {
-	class CompoundShapeCollision;
-	class ConvexShapeCollision;
-	class CircleShapeCollision;
+	class CompoundCollision;
+	class ConvexCollision;
+	class CircleCollision;
 	class AABBCollision;
 
 	class Collision
@@ -20,15 +16,15 @@ namespace cd
 	public:
 		virtual ~Collision() {};
 
-		virtual Projection<float> getProjection(const VECTOR<float>& axis) const = 0;
+		virtual Projection<float> getProjection(const Vector2<float>& axis) const = 0;
 
 		virtual bool intersects(const Collision&) const = 0;
-		virtual bool intersects(const CompoundShapeCollision&) const = 0;
-		virtual bool intersects(const CircleShapeCollision&) const = 0;
-		virtual bool intersects(const ConvexShapeCollision&) const = 0;
+		virtual bool intersects(const CompoundCollision&) const = 0;
+		virtual bool intersects(const CircleCollision&) const = 0;
+		virtual bool intersects(const ConvexCollision&) const = 0;
 		virtual bool intersects(const AABBCollision&) const = 0;
 
-		virtual bool contains(const VECTOR<float>& point) const = 0;
+		virtual bool contains(const Vector2<float>& point) const = 0;
 	};
 }
 

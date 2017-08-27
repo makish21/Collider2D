@@ -17,16 +17,16 @@ namespace cd
 
 		float left, top, width, height;
 
-		virtual Projection<float> getProjection(const VECTOR<float>& axis) const;
+		virtual Projection<float> getProjection(const Vector2<float>& axis) const;
 
 		virtual bool intersects(const Collision&) const;
-		virtual bool intersects(const CompoundShapeCollision& compound) const;
-		virtual bool intersects(const CircleShapeCollision& circle) const;
-		virtual bool intersects(const ConvexShapeCollision& convex) const;
+		virtual bool intersects(const CompoundCollision& compound) const;
+		virtual bool intersects(const CircleCollision& circle) const;
+		virtual bool intersects(const ConvexCollision& convex) const;
 		virtual bool intersects(const AABBCollision& other) const;
 		bool intersects(const AABBCollision& other, AABBCollision& intersection) const;
 		
-		virtual bool contains(const VECTOR<float>& point) const;
+		virtual bool contains(const Vector2<float>& point) const;
 	};
 }
 

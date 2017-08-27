@@ -1,6 +1,6 @@
-#include "CircleShapeCollision.h"
-#include "ConvexShapeCollision.h"
-#include "CompoundShapeCollision.h"
+#include "CircleCollision.h"
+#include "ConvexCollision.h"
+#include "CompoundCollision.h"
 #include "AABBCollision.h"
 
 namespace cd
@@ -26,21 +26,21 @@ namespace cd
 	{
 	}
 
-	Projection<float> AABBCollision::getProjection(const VECTOR<float>& axis) const
+	Projection<float> AABBCollision::getProjection(const Vector2<float>& axis) const
 	{
-		VECTOR<float> rectVertices[4];
+		Vector2<float> rectVertices[4];
 
-		rectVertices[0] = VECTOR<float>(left, top);
-		rectVertices[1] = VECTOR<float>(left + width, top);
-		rectVertices[2] = VECTOR<float>(left + width, top + height);
-		rectVertices[3] = VECTOR<float>(left, top + height);
+		rectVertices[0] = Vector2<float>(left, top);
+		rectVertices[1] = Vector2<float>(left + width, top);
+		rectVertices[2] = Vector2<float>(left + width, top + height);
+		rectVertices[3] = Vector2<float>(left, top + height);
 
-		float min = dotProduct(axis, rectVertices[0]);
+		float min = axis.dotProduct(rectVertices[0]);
 		float max = min;
 
 		for (int i = 0; i < 4; i++)
 		{
-			float dp = dotProduct(axis, rectVertices[i]);
+			float dp = axis.dotProduct(rectVertices[i]);
 
 			min = std::min(min, dp);
 			max = std::max(max, dp);
@@ -53,17 +53,17 @@ namespace cd
 	{
 		return collision.intersects(*this);
 	}
-	bool AABBCollision::intersects(const CompoundShapeCollision & compound) const
+	bool AABBCollision::intersects(const CompoundCollision & compound) const
 	{
 		return compound.intersects(*this);
 	}
 
-	bool AABBCollision::intersects(const CircleShapeCollision & circle) const
+	bool AABBCollision::intersects(const CircleCollision & circle) const
 	{
 		return circle.intersects(*this);
 	}
 
-	bool AABBCollision::intersects(const ConvexShapeCollision & convex) const
+	bool AABBCollision::intersects(const ConvexCollision & convex) const
 	{
 		return convex.intersects(*this);
 	}
@@ -107,7 +107,7 @@ namespace cd
 		}
 	}
 
-	bool AABBCollision::contains(const VECTOR<float>& point) const
+	bool AABBCollision::contains(const Vector2<float>& point) const
 	{
 		float minX = std::min(left, left + width);
 		float maxX = std::max(left, left + width);

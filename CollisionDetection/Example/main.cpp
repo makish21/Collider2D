@@ -5,7 +5,6 @@
 #include "CircleCollidableShape.h"
 #include "RectangleCollidableShape.h"
 
-
 sf::Color generateRandomColor()
 {
 	return sf::Color(std::rand() % 255,
@@ -42,12 +41,23 @@ int main()
 
 	sf::Event event;
 
+	sf::Clock clock;
+	int updates = 0;
+
 	while (window.isOpen())
 	{
 		std::srand(static_cast<unsigned int>(std::time(0)));
 
 		if (window.hasFocus())
 		{
+			if (clock.getElapsedTime().asSeconds() > 1)
+			{
+				std::string title = "Collision Example | Updates: ";
+				title.append(std::to_string(updates));
+				window.setTitle(title);
+				clock.restart();
+				updates = 0;
+			}
 			while (window.pollEvent(event))
 			{
 				switch (event.type)
@@ -77,7 +87,8 @@ int main()
 
 					for (auto i = collidableShapes.begin(); i != collidableShapes.end(); i++)
 					{
-						if ((*i)->getCollision().contains(mousePosition))
+						if ((*i)->getCollision().contains(cd::Vector2<float>(mousePosition.x, 
+																			 mousePosition.y)))
 						{
 							selectedShape = (*i);
 							selectedShape->showWireframe(true);
@@ -261,6 +272,8 @@ int main()
 			window.draw(lines);
 
 			window.display();
+
+			updates++;
 		}
 		else // window.hasFocus()
 		{

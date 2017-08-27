@@ -5,7 +5,7 @@ CircleCollidableShape::CircleCollidableShape(const sf::Vector2f & position,
 											 const float & radius,
 											 const sf::Color & color,
 											 sf::Font& font) :
-	circleCollision_(position, radius),
+	circleCollision_(cd::Vector2<float>(position.x, position.y), radius),
 	radius_(radius),
 	shape_(radius, 30),
 	CollidableShape(color, font)
@@ -13,9 +13,11 @@ CircleCollidableShape::CircleCollidableShape(const sf::Vector2f & position,
 	shape_.setOrigin(radius, radius);
 	shape_.setPosition(position);
 	setColor(color);
+
+	sf::Glyph glyph = font.getGlyph('a', 20, false);
 	text.setString(L"Circle");
 	text.setFillColor(sf::Color::White);
-	text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+	text.setOrigin(text.getLocalBounds().width / 2, glyph.bounds.height);
 	updateCollision();
 }
 
@@ -33,7 +35,8 @@ void CircleCollidableShape::draw(sf::RenderTarget & target, sf::RenderStates sta
 
 void CircleCollidableShape::updateCollision()
 {
-	circleCollision_.setPosition(getTransform().transformPoint(shape_.getPosition()));
+	sf::Vector2f position = getTransform().transformPoint(shape_.getPosition());
+	circleCollision_.setPosition(cd::Vector2<float>(position.x, position.y));
 	text.setPosition(getTransform().transformPoint(shape_.getPosition()));
 }
 

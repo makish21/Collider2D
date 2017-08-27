@@ -19,7 +19,7 @@ public:
 
 private:
 	float radius_;
-	cd::CircleShapeCollision circleCollision_;
+	cd::CircleCollision circleCollision_;
 	sf::CircleShape shape_;
 };
 
