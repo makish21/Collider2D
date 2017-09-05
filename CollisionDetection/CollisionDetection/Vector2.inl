@@ -30,14 +30,14 @@ inline float cd::Vector2<T>::length() const
 template<typename T>
 inline T cd::Vector2<T>::dotProduct(const Vector2<T>& vector) const
 {
-	return x * vector.x + y * vector.y;;
+	return x * vector.x + y * vector.y;
 }
 
 template<typename T>
 inline Vector2<float> cd::Vector2<T>::normalize() const
 {
 	float len = length();
-	return len == 0 ? Vector2<float>(0.f, 0.f) : Vector2<float>(Vector2<float>(*this) / len);;
+	return len == 0 ? Vector2<float>(0.f, 0.f) : Vector2<float>(Vector2<float>(*this) / len);
 }
 
 template<typename T>

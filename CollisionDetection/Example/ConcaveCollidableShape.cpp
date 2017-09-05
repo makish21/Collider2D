@@ -6,17 +6,40 @@ ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
 											   const sf::Color & color,
 											   sf::Font& font) :
 	shape_(shape),
+	vertices_(shape.getVertexCount()),
 	wireframe_(sf::Lines),
 	isWireframeVisible_(false),
 	CollidableShape(color, font),
 	primitiveType_(type)
 {
+	for (size_t i = 0; i < shape_.getVertexCount(); i++)
+	{
+		sf::Vector2f vertexPosition = getTransform().transformPoint(shape_[i].position);
+		vertices_[i] = new cd::Vector2<float>(vertexPosition.x, vertexPosition.y);
+	}
+
+	compoundCollision_.append(&vertices_[0], vertices_.size(), type);
+	//compoundCollision_.append(vertices_, type);
+
 	setColor(color);
 	updateCollision();
 
 	sf::Glyph glyph = font.getGlyph('a', 20, false);
 	text.setFillColor(sf::Color::White);
-	text.setString("Concave");
+
+	if (shape.getVertexCount() <= 3)
+	{
+		text.setString("Convex");
+	}
+	else if (type == cd::Triangles)
+	{
+		text.setString("Compound");
+	}
+	else
+	{
+		text.setString("Concave");
+	}
+
 	text.setOrigin(text.getGlobalBounds().width / 2, glyph.bounds.height);
 
 	float left = shape_[0].position.x;
@@ -37,6 +60,14 @@ ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
 
 ConcaveCollidableShape::~ConcaveCollidableShape()
 {
+	for (auto i = vertices_.begin(); i != vertices_.end(); i++)
+	{
+		if (*i)
+		{
+			delete *i;
+			*i = nullptr;
+		}
+	}
 }
 
 void ConcaveCollidableShape::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -54,8 +85,6 @@ void ConcaveCollidableShape::draw(sf::RenderTarget & target, sf::RenderStates st
 
 void ConcaveCollidableShape::updateCollision()
 {
-	std::vector<cd::Vector2<float>> vertices;
-
 	wireframe_.clear();
 
 	text.setRotation(-getRotation());
@@ -63,7 +92,7 @@ void ConcaveCollidableShape::updateCollision()
 	for (size_t i = 0; i < shape_.getVertexCount(); i++)
 	{
 		sf::Vector2f vertexPosition = getTransform().transformPoint(shape_[i].position);
-		vertices.push_back(cd::Vector2<float>(vertexPosition.x, vertexPosition.y));
+		*vertices_[i] = cd::Vector2<float>(vertexPosition.x, vertexPosition.y);
 
 		wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
 
@@ -96,9 +125,6 @@ void ConcaveCollidableShape::updateCollision()
 			}
 		}
 	}
-
-	compoundCollision_.clear();
-	compoundCollision_.append(vertices, primitiveType_);
 }
 
 void ConcaveCollidableShape::showWireframe(bool wireframe)

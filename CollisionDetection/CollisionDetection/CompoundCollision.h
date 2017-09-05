@@ -1,7 +1,7 @@
 #ifndef COMPOUND_SHAPE_COLLISION_H
 #define COMPOUND_SHAPE_COLLISION_H
 
-#include <vector>
+#include <forward_list>
 
 #include "Collision.hpp"
 
@@ -19,15 +19,21 @@ namespace cd
 	{
 	public:
 		CompoundCollision();
-		CompoundCollision(const std::vector<Collision*>& collisions);
-		CompoundCollision(const std::vector<Vector2<float>>& vertices, const PrimitiveType& type);
+		CompoundCollision(Collision* collisions[], size_t collisionsCount);
+		CompoundCollision(const Vector2<float> vertices[], size_t vertexCount, const PrimitiveType& type);
+		CompoundCollision(Vector2<float>* vertices[], size_t vertexCount, const PrimitiveType& type);
 
 		~CompoundCollision();
 
 		void append(Collision* collision);
 		void append(const ConvexCollision& convex);
 		void append(const CircleCollision& circle);
-		void append(const std::vector<Vector2<float>>& vertices, const PrimitiveType& type);
+		void append(const AABBCollision& aabb);
+		void append(const Vector2<float> vertices[], size_t vertexCount, const PrimitiveType& type);
+		void append(Vector2<float>* vertices[], size_t vertexCount, const PrimitiveType& type);
+
+		void splice(CompoundCollision& other);
+
 		void clear();
 
 		virtual Projection<float> getProjection(const Vector2<float>& axis) const;
@@ -41,7 +47,7 @@ namespace cd
 		virtual bool contains(const Vector2<float>& point) const;
 
 	private:
-		std::vector<Collision*> m_collisions;
+		std::forward_list<Collision*> m_collisions;
 	};
 
 } // namespace cd

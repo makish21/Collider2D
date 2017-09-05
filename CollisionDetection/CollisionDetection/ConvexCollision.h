@@ -12,14 +12,16 @@ namespace cd
 	{
 	public:
 		ConvexCollision();
-		ConvexCollision(const size_t& vertexCount);
-		ConvexCollision(const std::vector<Vector2<float>>& vertices);
+		ConvexCollision(size_t vertexCount);
+		ConvexCollision(const Vector2<float> vertices[], size_t vertexCount);
+		ConvexCollision(Vector2<float>* vertices[], size_t vertexCount);
 
 		~ConvexCollision();
 
-		void resize(const std::size_t& newSize);
+		void resize(std::size_t newSize);
 		size_t getVertexCount() const;
 		void append(const Vector2<float>& vertex);
+		void append(Vector2<float>* vertex);
 		void clear();
 
 		virtual Projection<float> getProjection(const Vector2<float>& axis) const;
@@ -32,11 +34,12 @@ namespace cd
 
 		virtual bool contains(const Vector2<float>& point) const;
 
-		Vector2<float>& operator[](const std::size_t& index);
-		const Vector2<float>& operator[](const std::size_t& index) const;
+		Vector2<float>& operator[](size_t index);
+		const Vector2<float>& operator[](size_t index) const;
 
 	private:
-		std::vector<Vector2<float>> m_vertices;
+		std::vector<Vector2<float>*> m_vertices;
+		std::vector<Vector2<float>**> m_allocatedVertices;
 	};
 
 } // namespace cd

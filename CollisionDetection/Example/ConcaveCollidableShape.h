@@ -20,6 +20,7 @@ public:
 
 private:
 	cd::CompoundCollision compoundCollision_;
+	std::vector<cd::Vector2<float>*> vertices_;
 	sf::VertexArray shape_;
 	sf::VertexArray wireframe_;
 	bool isWireframeVisible_;

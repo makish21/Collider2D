@@ -2,7 +2,6 @@
 #define VECTOR_2_HPP
 
 #include <complex>
-#include <SFML\System\Vector2.hpp>
 
 namespace cd
 {
