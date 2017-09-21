@@ -35,16 +35,17 @@ void RectangleCollidableShape::draw(sf::RenderTarget & target, sf::RenderStates 
 
 void RectangleCollidableShape::updateCollision()
 {
-	rectCollision_.left = getTransform().transformRect(shape_.getGlobalBounds()).left;
-	rectCollision_.top = getTransform().transformRect(shape_.getGlobalBounds()).top;
-	rectCollision_.width = getTransform().transformRect(shape_.getGlobalBounds()).width;
-	rectCollision_.height = getTransform().transformRect(shape_.getGlobalBounds()).height;
+	sf::FloatRect rect = getTransform().transformRect(shape_.getGlobalBounds());
 
-	wireframe_.setPosition(rectCollision_.left, rectCollision_.top);
-	wireframe_.setSize(sf::Vector2f(rectCollision_.width, rectCollision_.height));
+	rectCollision_.setPosition(cd::Vector2<float>(rect.left + rect.width / 2.f,
+												  rect.top + rect.height / 2.f));
+	rectCollision_.setSize(cd::Vector2<float>(rect.width, rect.height));
 
-	text.setPosition(rectCollision_.left + rectCollision_.width / 2,
-					 rectCollision_.top + rectCollision_.height / 2);
+	wireframe_.setPosition(rect.left, rect.top);
+	wireframe_.setSize(sf::Vector2f(rect.width, rect.height));
+
+	text.setPosition(rect.left + rect.width / 2,
+					 rect.top + rect.height / 2);
 }
 
 void RectangleCollidableShape::showWireframe(bool wireframe)

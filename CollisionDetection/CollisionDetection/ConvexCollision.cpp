@@ -106,12 +106,15 @@ namespace cd
 		for (size_t i = 0, j = m_vertices.size() - 1; i < m_vertices.size(); i++, j = i - 1)
 		{
 			axis = Vector2<float>(*m_vertices[i] - *m_vertices[j]).normal().normalize();
-	
+
 			if (!getProjection(axis).overlaps(other.getProjection(axis)))
 			{
 				return false;
 			}
-	
+		}
+
+		for (size_t i = 0, j = other.m_vertices.size() - 1; i < other.m_vertices.size(); i++, j = i - 1)
+		{
 			axis = Vector2<float>(*other.m_vertices[i] - *other.m_vertices[j]).normal().normalize();
 	
 			if (!getProjection(axis).overlaps(other.getProjection(axis)))

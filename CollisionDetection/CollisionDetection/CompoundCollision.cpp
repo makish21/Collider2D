@@ -200,22 +200,6 @@ namespace cd
 		m_collisions.clear();
 	}
 
-	Projection<float> CompoundCollision::getProjection(const Vector2<float>& axis) const
-	{
-		float min = m_collisions.front()->getProjection(axis).min;
-		float max = min;
-
-		for (auto i = m_collisions.begin(); i != m_collisions.end(); i++)
-		{
-			Projection<float> projection = (*i)->getProjection(axis);
-
-			min = std::min(projection.min, min);
-			max = std::max(projection.max, max);
-		}
-
-		return Projection<float>(min, max);
-	}
-
 	bool CompoundCollision::intersects(const CompoundCollision & other) const
 	{
 		for (auto i = m_collisions.begin(); i != m_collisions.end(); i++)

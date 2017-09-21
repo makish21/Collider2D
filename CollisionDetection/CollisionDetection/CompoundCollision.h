@@ -36,8 +36,6 @@ namespace cd
 
 		void clear();
 
-		virtual Projection<float> getProjection(const Vector2<float>& axis) const;
-
 		virtual bool intersects(const Collision& other) const;
 		virtual bool intersects(const CompoundCollision& other) const;
 		virtual bool intersects(const ConvexCollision& convex) const;

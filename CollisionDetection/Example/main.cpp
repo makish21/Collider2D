@@ -4,6 +4,7 @@
 #include "ConcaveCollidableShape.h"
 #include "CircleCollidableShape.h"
 #include "RectangleCollidableShape.h"
+#include "ConvexCollidableShape.h"
 
 sf::Color generateRandomColor()
 {
@@ -147,20 +148,16 @@ int main()
 
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
 						{
-							newConcaveShape.setPrimitiveType(sf::Triangles);
+							newConcaveShape.setPrimitiveType(sf::TrianglesFan);
 							newConcaveShape.append(sf::Vertex(mousePosition,
 															  sf::Color::Transparent));
 
 							lines.append(sf::Vertex(mousePosition,
-														sf::Color::White));
+													sf::Color::White));
 
-							if (newConcaveShape.getVertexCount() % 3 == 0)
+							if (newConcaveShape.getVertexCount() >= 2)
 							{
-								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 2].position,
-														sf::Color::White));
 								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 1].position,
-														sf::Color::White));
-								lines.append(sf::Vertex(newConcaveShape[newConcaveShape.getVertexCount() - 3].position,
 														sf::Color::White));
 							}
 						}
@@ -209,9 +206,22 @@ int main()
 						break;
 					}
 
-					case sf::Keyboard::LAlt:
+					/*case sf::Keyboard::LAlt:
 					{
 						collidableShapes.push_back(new ConcaveCollidableShape(newConcaveShape,
+																			  cd::Triangles,
+																			  generateRandomColor(),
+																			  helvetica));
+
+						newConcaveShape.clear();
+						lines.clear();
+
+						break;
+					}*/
+
+					case sf::Keyboard::LAlt:
+					{
+						collidableShapes.push_back(new ConvexCollidableShape(newConcaveShape,
 																			  cd::Triangles,
 																			  generateRandomColor(),
 																			  helvetica));

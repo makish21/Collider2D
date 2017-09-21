@@ -19,7 +19,6 @@ ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
 	}
 
 	compoundCollision_.append(&vertices_[0], vertices_.size(), type);
-	//compoundCollision_.append(vertices_, type);
 
 	setColor(color);
 	updateCollision();

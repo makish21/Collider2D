@@ -63,8 +63,8 @@ namespace cd
 
 	bool CircleCollision::intersects(const AABBCollision & aabb) const
 	{
-		Vector2<float> aabbHalfExtents(aabb.width / 2, aabb.height / 2);
-		Vector2<float> aabbCenter(aabb.left + aabbHalfExtents.x, aabb.top + aabbHalfExtents.y);
+		Vector2<float> aabbHalfExtents(aabb.getSize() / 2.f);
+		Vector2<float> aabbCenter(aabb.getPosition());
 
 		Vector2<float> difference = m_position - aabbCenter;
 
