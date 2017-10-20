@@ -5,10 +5,6 @@
 
 namespace cd
 {
-	CircleCollision::CircleCollision()
-	{
-	}
-
 	CircleCollision::CircleCollision(const Vector2<float>& position, float radius) :
 		m_position(position),
 		m_radius(radius)
@@ -58,21 +54,23 @@ namespace cd
 
 	bool CircleCollision::intersects(const CircleCollision & other) const
 	{
-		return Vector2<float>(m_position - other.m_position).length() < m_radius + other.m_radius;
+		Vector2<float> distance = m_position - other.m_position;
+		// Faster than distance.length().
+		float length = distance.x * distance.x + distance.y * distance.y;
+		return length <= std::pow((m_radius + other.m_radius), 2);
 	}
 
 	bool CircleCollision::intersects(const AABBCollision & aabb) const
 	{
-		Vector2<float> aabbHalfExtents(aabb.getSize() / 2.f);
-		Vector2<float> aabbCenter(aabb.getPosition());
+		Vector2<float> aabbHalfExtents = aabb.getSize() / 2.f;
 
-		Vector2<float> difference = m_position - aabbCenter;
+		Vector2<float> difference = m_position - aabb.getPosition();
 
 		Vector2<float> clamped;
 		clamped.x = std::max(-aabbHalfExtents.x, std::min(aabbHalfExtents.x, difference.x));
 		clamped.y = std::max(-aabbHalfExtents.y, std::min(aabbHalfExtents.y, difference.y));
 
-		Vector2<float> closest = aabbCenter + clamped;
+		Vector2<float> closest = aabb.getPosition() + clamped;
 
 		difference = closest - m_position;
 

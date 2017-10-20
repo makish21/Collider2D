@@ -36,6 +36,11 @@ int main()
 	collidableShapes.push_back(new CircleCollidableShape(sf::Vector2f(400.f, 300.f), 50.f,
 														 generateRandomColor(),
 														 helvetica));
+
+	collidableShapes.push_back(new CircleCollidableShape(sf::Vector2f(600.f, 400.f), 70.f,
+														 generateRandomColor(),
+														 helvetica));
+
 	collidableShapes.push_back(new RectangleCollidableShape(sf::Rect<float>(100.f, 100.f, 100.f, 250.f),
 															generateRandomColor(),
 															helvetica));

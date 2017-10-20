@@ -7,10 +7,6 @@
 
 namespace cd
 {
-	ConvexCollision::ConvexCollision()
-	{
-	}
-
 	ConvexCollision::ConvexCollision(size_t vertexCount) :
 		m_vertices(vertexCount)
 	{
@@ -211,11 +207,11 @@ namespace cd
 
 	Vector2<float>& ConvexCollision::operator[](std::size_t index)
 	{
-		return *m_vertices[index];
+		return index < getVertexCount() ? *m_vertices[index] : *m_vertices[index % getVertexCount()];
 	}
 
 	const Vector2<float>& ConvexCollision::operator[](std::size_t index) const
 	{
-		return *m_vertices[index];
+		return index < getVertexCount() ? *m_vertices[index] : *m_vertices[index % getVertexCount()];;
 	}
 }

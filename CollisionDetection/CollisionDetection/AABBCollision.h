@@ -33,7 +33,7 @@ namespace cd
 		// Destructor.
 		~AABBCollision();
 
-		// Set the center position of the rectangle.
+		// Set the position of the rectangle's center.
 		//
 		// parameter position - new center position of the rectangle.
 		void setPosition(const Vector2<float>& position);
@@ -43,7 +43,7 @@ namespace cd
 		// parameter size - new size of the rectangle.
 		void setSize(const Vector2<float>& size);
 
-		// Get the center position of the rectangle.
+		// Get the position of the rectangle's center.
 		//
 		// return center position of the rectangle.
 		const Vector2<float>& getPosition() const;
@@ -65,11 +65,9 @@ namespace cd
 		// return index-th point of the rectangle.
 		Vector2<float> getCorner(unsigned int index) const;
 
-		//float left, top, width, height;
-
 		// Get the projection of the collision on the axis.
 		//
-		// parameter axis - axis dor projection.
+		// parameter axis - axis for projection.
 		//
 		// return projection of the collision.
 		Projection<float> getProjection(const Vector2<float>& axis) const;
@@ -140,7 +138,7 @@ namespace cd
 // AABBCollision is a collision representing an axis-aligned
 // rectangle. This means that this rectangle depends on X and Y
 // coordinates and cannot be rotated.
-// For rectangle's rotation cd::ConvexCollision is recommended.
+// To create a rotatable rectangle, use cd::ConvexCollision.
 //
 // Usage example:
 //
