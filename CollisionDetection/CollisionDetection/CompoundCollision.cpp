@@ -14,7 +14,7 @@ namespace cd
 	{
 	}
 
-	cd::CompoundCollision::CompoundCollision(const Vector2<float> vertices[], size_t vertexCount, const PrimitiveType & type)
+	CompoundCollision::CompoundCollision(const Vector2<float> vertices[], size_t vertexCount, const PrimitiveType & type)
 	{
 		append(vertices, vertexCount, type);
 	}
