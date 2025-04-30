@@ -1,6 +1,9 @@
-#pragma once
-#include "CollidableShape.h"
-#include <AABBCollision.h>
+#ifndef RECTANGLE_COLLIDABLE_SHAPE_HPP
+#define RECTANGLE_COLLIDABLE_SHAPE_HPP
+
+#include <AABBCollision.hpp>
+
+#include "CollidableShape.hpp"
 
 class RectangleCollidableShape :
 	public CollidableShape
@@ -23,3 +26,5 @@ private:
 	cd::AABBCollision rectCollision_;
 	sf::RectangleShape shape_;
 };
+
+#endif // RECTANGLE_COLLIDABLE_SHAPE_HPP

@@ -1,4 +1,4 @@
-#include "CircleCollidableShape.h"
+#include "CircleCollidableShape.hpp"
 
 
 CircleCollidableShape::CircleCollidableShape(const sf::Vector2f & position,
@@ -10,14 +10,14 @@ CircleCollidableShape::CircleCollidableShape(const sf::Vector2f & position,
 	shape_(radius, 30),
 	CollidableShape(color, font)
 {
-	shape_.setOrigin(radius, radius);
+	shape_.setOrigin({radius, radius});
 	shape_.setPosition(position);
 	setColor(color);
 
 	sf::Glyph glyph = font.getGlyph('a', 20, false);
 	text.setString(L"Circle");
 	text.setFillColor(sf::Color::White);
-	text.setOrigin(text.getLocalBounds().width / 2, glyph.bounds.height);
+	text.setOrigin({text.getLocalBounds().size.x / 2.f, glyph.bounds.size.y});
 	updateCollision();
 }
 

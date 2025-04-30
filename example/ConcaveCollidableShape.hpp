@@ -1,5 +1,7 @@
-#pragma once
-#include "CollidableShape.h"
+#ifndef CONCAVE_COLLIDABLE_SHAPE_HPP
+#define CONCAVE_COLLIDABLE_SHAPE_HPP
+
+#include "CollidableShape.hpp"
 
 class ConcaveCollidableShape :
 	public CollidableShape
@@ -27,3 +29,4 @@ private:
 	cd::PrimitiveType primitiveType_;
 };
 
+#endif // CONCAVE_COLLIDABLE_SHAPE_HPP

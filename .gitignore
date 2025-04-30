@@ -56,3 +56,6 @@
 /CollisionDetection/UnitTest
 *.exp
 *.xdc
+
+cmake-build-*
+.vscode

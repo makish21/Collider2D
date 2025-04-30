@@ -1,4 +1,4 @@
-#include "ConcaveCollidableShape.h"
+#include "ConcaveCollidableShape.hpp"
 
 
 ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
@@ -7,7 +7,7 @@ ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
 											   sf::Font& font) :
 	shape_(shape),
 	vertices_(shape.getVertexCount()),
-	wireframe_(sf::Lines),
+	wireframe_(sf::PrimitiveType::Lines),
 	isWireframeVisible_(false),
 	CollidableShape(color, font),
 	primitiveType_(type)
@@ -39,7 +39,7 @@ ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
 		text.setString("Concave");
 	}
 
-	text.setOrigin(text.getGlobalBounds().width / 2, glyph.bounds.height);
+	text.setOrigin({text.getGlobalBounds().size.x / 2.f, glyph.bounds.size.y});
 
 	float left = shape_[0].position.x;
 	float top = shape_[0].position.y;
@@ -54,7 +54,7 @@ ConcaveCollidableShape::ConcaveCollidableShape(const sf::VertexArray& shape,
 		down = std::max(down, shape[i].position.y);
 	}
 	
-	text.setPosition(left + (right - left) / 2.f, top + (down - top) / 2.f);
+	text.setPosition({left + (right - left) / 2.f, top + (down - top) / 2.f});
 }
 
 ConcaveCollidableShape::~ConcaveCollidableShape()
@@ -93,30 +93,30 @@ void ConcaveCollidableShape::updateCollision()
 		sf::Vector2f vertexPosition = getTransform().transformPoint(shape_[i].position);
 		*vertices_[i] = cd::Vector2<float>(vertexPosition.x, vertexPosition.y);
 
-		wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
+		wireframe_.append({shape_[i].position, sf::Color::Yellow});
 
 		if (i >= 2)
 		{
 			switch (primitiveType_)
 			{
 			case cd::TriangleStrip:
-				wireframe_.append(sf::Vertex(shape_[i - 1].position, sf::Color::Yellow));
-				wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
-				wireframe_.append(sf::Vertex(shape_[i - 2].position, sf::Color::Yellow));
+				wireframe_.append({shape_[i - 1].position, sf::Color::Yellow});
+				wireframe_.append({shape_[i].position, sf::Color::Yellow});
+				wireframe_.append({shape_[i - 2].position, sf::Color::Yellow});
 				break;
 
 			case cd::TriangleFan:
-				wireframe_.append(sf::Vertex(shape_[0].position, sf::Color::Yellow));
-				wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
-				wireframe_.append(sf::Vertex(shape_[i - 1].position, sf::Color::Yellow));
+				wireframe_.append({shape_[0].position, sf::Color::Yellow});
+				wireframe_.append({shape_[i].position, sf::Color::Yellow});
+				wireframe_.append({shape_[i - 1].position, sf::Color::Yellow});
 				break;
 
 			case cd::Triangles:
 				if ((i + 1) % 3 == 0)
 				{
-					wireframe_.append(sf::Vertex(shape_[i - 1].position, sf::Color::Yellow));
-					wireframe_.append(sf::Vertex(shape_[i].position, sf::Color::Yellow));
-					wireframe_.append(sf::Vertex(shape_[i - 2].position, sf::Color::Yellow));
+					wireframe_.append({shape_[i - 1].position, sf::Color::Yellow});
+					wireframe_.append({shape_[i].position, sf::Color::Yellow});
+					wireframe_.append({shape_[i - 2].position, sf::Color::Yellow});
 				}
 
 			default:

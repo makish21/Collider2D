@@ -1,4 +1,4 @@
-#include "ConvexCollidableShape.h"
+#include "ConvexCollidableShape.hpp"
 
 
 ConvexCollidableShape::ConvexCollidableShape(const sf::VertexArray & shape, 
@@ -7,7 +7,7 @@ ConvexCollidableShape::ConvexCollidableShape(const sf::VertexArray & shape,
 											 sf::Font & font) :
 	m_shape(shape),
 	m_vertices(shape.getVertexCount()),
-	m_wireframe(sf::LineStrip),
+	m_wireframe(sf::PrimitiveType::LineStrip),
 	m_isWireframeVisible(false),
 	CollidableShape(color, font)
 {
@@ -25,7 +25,7 @@ ConvexCollidableShape::ConvexCollidableShape(const sf::VertexArray & shape,
 	text.setFillColor(sf::Color::White);
 
 	text.setString("Convex");
-	text.setOrigin(text.getGlobalBounds().width / 2, glyph.bounds.height);
+	text.setOrigin({text.getGlobalBounds().size.x / 2, glyph.bounds.size.y});
 
 	float left = m_shape[0].position.x;
 	float top = m_shape[0].position.y;
@@ -40,7 +40,7 @@ ConvexCollidableShape::ConvexCollidableShape(const sf::VertexArray & shape,
 		down = std::max(down, shape[i].position.y);
 	}
 
-	text.setPosition(left + (right - left) / 2.f, top + (down - top) / 2.f);
+	text.setPosition({left + (right - left) / 2.f, top + (down - top) / 2.f});
 }
 
 ConvexCollidableShape::~ConvexCollidableShape()
@@ -79,10 +79,10 @@ void ConvexCollidableShape::updateCollision()
 		sf::Vector2f vertexPosition = getTransform().transformPoint(m_shape[i].position);
 		*m_vertices[i] = cd::Vector2<float>(vertexPosition.x, vertexPosition.y);
 
-		m_wireframe.append(sf::Vertex(m_shape[i].position, sf::Color::Yellow));
+		m_wireframe.append({m_shape[i].position, sf::Color::Yellow});
 	}
 
-	m_wireframe.append(sf::Vertex(m_shape[0].position, sf::Color::Yellow));
+	m_wireframe.append({m_shape[0].position, sf::Color::Yellow});
 }
 
 void ConvexCollidableShape::showWireframe(bool wireframe)

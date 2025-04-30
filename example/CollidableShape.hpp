@@ -1,4 +1,6 @@
-#pragma once
+#ifndef COLLIDABLE_SHAPE_HPP
+#define COLLIDABLE_SHAPE_HPP
+
 #include <CollisionDetection.hpp>
 #include <SFML\Graphics.hpp>
 
@@ -20,3 +22,5 @@ protected:
 	sf::Color color;
 	sf::Text text;
 };
+
+#endif // COLLIDABLE_SHAPE_HPP

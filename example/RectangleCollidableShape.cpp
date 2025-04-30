@@ -1,4 +1,4 @@
-#include "RectangleCollidableShape.h"
+#include "RectangleCollidableShape.hpp"
 
 
 
@@ -6,19 +6,19 @@ RectangleCollidableShape::RectangleCollidableShape(const sf::Rect<float> rect,
 												   const sf::Color & color,
 												   sf::Font& font) :
 	CollidableShape(color, font),
-	shape_(sf::Vector2f(rect.width, rect.height))
+	shape_(rect.size)
 {
 	wireframe_.setFillColor(sf::Color::Transparent);
 	wireframe_.setOutlineColor(sf::Color::Yellow);
 	wireframe_.setOutlineThickness(1.f);
 
-	shape_.setPosition(rect.left, rect.top);
+	shape_.setPosition(rect.position);
 	setColor(color);
 	updateCollision();
 
 	text.setFillColor(sf::Color::White);
 	text.setString("AABB");
-	text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
+	text.setOrigin(text.getGlobalBounds().size / 2.f);
 }
 
 RectangleCollidableShape::~RectangleCollidableShape()
@@ -36,16 +36,15 @@ void RectangleCollidableShape::draw(sf::RenderTarget & target, sf::RenderStates 
 void RectangleCollidableShape::updateCollision()
 {
 	sf::FloatRect rect = getTransform().transformRect(shape_.getGlobalBounds());
+	sf::Vector2f center = rect.getCenter();
 
-	rectCollision_.setPosition(cd::Vector2<float>(rect.left + rect.width / 2.f,
-												  rect.top + rect.height / 2.f));
-	rectCollision_.setSize(cd::Vector2<float>(rect.width, rect.height));
+	rectCollision_.setPosition({center.x, center.y});
+	rectCollision_.setSize({rect.size.x, rect.size.y});
 
-	wireframe_.setPosition(rect.left, rect.top);
-	wireframe_.setSize(sf::Vector2f(rect.width, rect.height));
+	wireframe_.setPosition(rect.position);
+	wireframe_.setSize(rect.size);
 
-	text.setPosition(rect.left + rect.width / 2,
-					 rect.top + rect.height / 2);
+	text.setPosition(rect.getCenter());
 }
 
 void RectangleCollidableShape::showWireframe(bool wireframe)

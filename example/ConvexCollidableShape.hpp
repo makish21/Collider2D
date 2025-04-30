@@ -1,6 +1,10 @@
-#pragma once
-#include <ConvexCollision.h>
-#include "CollidableShape.h"
+#ifndef CONVEX_COLLIDABLE_SHAPE_HPP
+#define CONVEX_COLLIDABLE_SHAPE_HPP
+
+#include <ConvexCollision.hpp>
+
+#include "CollidableShape.hpp"
+
 class ConvexCollidableShape :
 	public CollidableShape
 {
@@ -26,3 +30,4 @@ private:
 	bool m_isWireframeVisible;
 };
 
+#endif // CONVEX_COLLIDABLE_SHAPE_HPP

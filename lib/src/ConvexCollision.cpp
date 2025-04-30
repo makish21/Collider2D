@@ -1,7 +1,7 @@
-#include "ConvexCollision.h"
-#include "CircleCollision.h"
-#include "CompoundCollision.h"
-#include "AABBCollision.h"
+#include "ConvexCollision.hpp"
+#include "CircleCollision.hpp"
+#include "CompoundCollision.hpp"
+#include "AABBCollision.hpp"
 
 #include "Projection.hpp"
 

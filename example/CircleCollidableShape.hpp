@@ -1,5 +1,7 @@
-#pragma once
-#include "CollidableShape.h"
+#ifndef CIRCLE_COLLIDABLE_SHAPE_HPP
+#define CIRCLE_COLLIDABLE_SHAPE_HPP
+
+#include "CollidableShape.hpp"
 class CircleCollidableShape :
 	public CollidableShape
 {
@@ -23,3 +25,4 @@ private:
 	sf::CircleShape shape_;
 };
 
+#endif // CIRCLE_COLLIDABLE_SHAPE_HPP

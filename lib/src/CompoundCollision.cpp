@@ -1,7 +1,7 @@
-#include "CompoundCollision.h"
-#include "ConvexCollision.h"
-#include "CircleCollision.h"
-#include "AABBCollision.h"
+#include "CompoundCollision.hpp"
+#include "ConvexCollision.hpp"
+#include "CircleCollision.hpp"
+#include "AABBCollision.hpp"
 
 namespace cd
 {

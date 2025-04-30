@@ -1,9 +1,9 @@
-#include "CollidableShape.h"
+#include "CollidableShape.hpp"
 
 
 CollidableShape::CollidableShape(const sf::Color & color, sf::Font& font) :
 	color(color),
-	text("", font, 20)
+	text(font, "", 20)
 {
 }
 
