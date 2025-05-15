@@ -2,7 +2,7 @@
 #define COLLIDABLE_SHAPE_HPP
 
 #include <CollisionDetection.hpp>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 class CollidableShape : 
 	public sf::Transformable, public sf::Drawable

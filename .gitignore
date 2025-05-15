@@ -57,5 +57,5 @@
 *.exp
 *.xdc
 
-cmake-build-*
+build*
 .vscode

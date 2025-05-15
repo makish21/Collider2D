@@ -1,5 +1,6 @@
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <vector>
+#include <iostream>
 
 #include "ConcaveCollidableShape.hpp"
 #include "CircleCollidableShape.hpp"
@@ -216,6 +217,7 @@ int main()
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
 			{
+				std::cout << "pressed" << std::endl;
 				selectedShape->rotate(sf::degrees(1.f));
 				selectedShape->updateCollision();
 			}
